@@ -1,4 +1,4 @@
-## C++ library
+# C++ library
 著作権フリー
 使い放題
 
