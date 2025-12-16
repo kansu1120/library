@@ -7,7 +7,7 @@
 
 ##
 ```md
-```cpp
+
 class segmenttree{
 public:
     int siz = 1;
