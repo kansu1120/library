@@ -8,6 +8,7 @@ segmenttree 名前(サイズ)　で定義
 
 
 ```cpp
+
 class segmenttree{
 public:
     int siz = 1;
