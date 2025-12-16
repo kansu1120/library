@@ -1,5 +1,5 @@
 # C++ library
-著作権フリー　
+
 
 
 
@@ -11,4 +11,5 @@
 <br>
 <br>
 <br>
+著作権フリー
 <small>made by kansu</small>
