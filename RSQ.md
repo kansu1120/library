@@ -1,9 +1,10 @@
 # 区間和のセグ木
-## segmenttree 名前(サイズ)　で定義
 
-名前.update( i , x ) で i 番目の要素を x に変更
+# segmenttree 名前(サイズ)　で定義
 
-名前.query( l , r ) で l から r の範囲内の合計値を取得
+# 名前.update( i , x ) で i 番目の要素を x に変更
+
+# 名前.query( l , r ) で l から r の範囲内の合計値を取得
 
 ##
 ```md
