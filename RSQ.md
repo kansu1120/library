@@ -7,7 +7,7 @@
  名前.query( l , r ) で l から r の範囲内の合計値を取得
 
 
-```md
+```cpp
 
 class segmenttree{
 public:
