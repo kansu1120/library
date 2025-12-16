@@ -6,7 +6,7 @@
 名前.query( l , r ) で l から r の範囲内の合計値を取得
 
 ##
-
+,,,
 class segmenttree{
 public:
     int siz = 1;
