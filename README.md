@@ -1,7 +1,7 @@
 # library
 
 
-
+- [template](template.md)
 - [RMaxQ](RMaxQ.md)
 - [RMinQ](RMinQ.md)
 - [RSQ](RSQ.md)
