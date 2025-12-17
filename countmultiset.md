@@ -1,6 +1,4 @@
-# countablemultiset
-
-名前は勝手につけました
+# countが高速に行えるmaltiset
 
 使い方はmulsisetと同じ
 
