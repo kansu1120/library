@@ -10,6 +10,10 @@ ika = 以下
 
 mim = 未満
 
+結果がイテレータではなく添字で帰ってくる
+
+end() に相当するリターンは-1
+
 ```cpp
 
 template<typename T>
