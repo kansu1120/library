@@ -1,6 +1,7 @@
 # 二分探索用vector
 
 使い方は普通のvectorと同じ
+
 lb = lower_bound
 
 up = upperbound
