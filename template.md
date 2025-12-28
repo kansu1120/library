@@ -1,6 +1,6 @@
 # template
 
-<script src="/library/assets/copy.js"></script>
+<script src="/library/copy.js"></script>
 
 
 
