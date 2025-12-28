@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("pre > code").forEach(code => {
-    // cppだけにしたい場合は次の行のコメントを外す
-    // if (!code.className.includes("cpp") && !code.className.includes("language-cpp")) return;
 
     const pre = code.parentElement;
 
@@ -16,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     button.style.borderRadius = "4px";
     button.style.zIndex = "10";
 
-    // pre が relative でないなら relative にする
+    // pre を relative にする
     const prevPos = window.getComputedStyle(pre).position;
     if (prevPos === "static" || !prevPos) pre.style.position = "relative";
 
