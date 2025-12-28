@@ -1,3 +1,5 @@
+[home](README.md)
+
 # RMaxQ
 segmenttree 名前(サイズ)　で定義
 
