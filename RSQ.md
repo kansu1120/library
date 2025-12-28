@@ -1,3 +1,5 @@
+[home](README.md)
+
 # 区間和のセグ木
 
  segmenttree 名前(サイズ)　で定義
