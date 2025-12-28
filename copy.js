@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("pre > code.language-cpp").forEach(code => {
+  document.querySelectorAll("pre > code").forEach(code => {
+    // cpp 以外は除外したい場合
+    if (!code.className.includes("cpp")) return;
+
     const pre = code.parentElement;
 
     const button = document.createElement("button");
