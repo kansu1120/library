@@ -6,14 +6,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   body {
-    font-size: 18px; /* ← 全体の文字サイズ */
-    line-height: 1.7; /* ← 行間（読みやすさ） */
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 900px;   /* ← 横幅の上限 */
+    margin: 0 auto;     /* ← 左右を自動で中央寄せ */
+    padding: 24px;      /* ← 端がくっつかないように */
   }
 
   pre, code {
-    font-size: 16px; /* ← コードは少し小さめに */
+    font-size: 16px;
   }
 </style>
+
   <!-- ★ これを追加（コードに色を付ける） -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
