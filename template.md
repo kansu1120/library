@@ -1,5 +1,10 @@
 # template
 
+<script src="/library/assets/copy.js"></script>
+
+
+
+
 ```cpp
 #include <bits/stdc++.h>
 #include <atcoder/all>
