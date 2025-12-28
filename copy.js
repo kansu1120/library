@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("pre > code").forEach(code => {
-    // cpp 以外は除外したい場合
-    if (!code.className.includes("cpp")) return;
+    // cppだけにしたい場合は次の行のコメントを外す
+    // if (!code.className.includes("cpp") && !code.className.includes("language-cpp")) return;
 
     const pre = code.parentElement;
 
@@ -12,15 +12,26 @@ document.addEventListener("DOMContentLoaded", () => {
     button.style.right = "6px";
     button.style.fontSize = "12px";
     button.style.cursor = "pointer";
+    button.style.padding = "4px 6px";
+    button.style.borderRadius = "4px";
+    button.style.zIndex = "10";
 
-    pre.style.position = "relative";
+    // pre が relative でないなら relative にする
+    const prevPos = window.getComputedStyle(pre).position;
+    if (prevPos === "static" || !prevPos) pre.style.position = "relative";
+
     pre.appendChild(button);
 
-    button.addEventListener("click", () => {
-      navigator.clipboard.writeText(code.innerText).then(() => {
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.innerText);
         button.textContent = "Copied!";
-        setTimeout(() => button.textContent = "Copy", 1000);
-      });
+        setTimeout(() => (button.textContent = "Copy"), 1000);
+      } catch (err) {
+        console.error("copy failed:", err);
+        button.textContent = "Failed";
+        setTimeout(() => (button.textContent = "Copy"), 1500);
+      }
     });
   });
 });
