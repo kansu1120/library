@@ -4,10 +4,20 @@
   <meta charset="utf-8">
   <title>{{ page.title }}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- ★ これを追加（コードに色を付ける） -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 <body>
+
   {{ content }}
 
+  <!-- highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+  <!-- Copy ボタン -->
   <script src="{{ '/library/copy.js' | relative_url }}"></script>
 </body>
 </html>
