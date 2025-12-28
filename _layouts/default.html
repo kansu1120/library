@@ -27,13 +27,12 @@
 </head>
 <body>
 
-  {{ content }}
+  <div class="container">
+    {{ content }}
+  </div>
 
-  <!-- highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
-
-  <!-- Copy ボタン -->
   <script src="{{ '/library/copy.js' | relative_url }}"></script>
 </body>
 </html>
