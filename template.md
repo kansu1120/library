@@ -1,6 +1,12 @@
+---
+layout: default
+---
+
+
+
 # テンプレート
 
-<script src="/library/copy.js"></script>
+
 
 
 
