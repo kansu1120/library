@@ -1,5 +1,3 @@
-[home](README.md)
-
 # ラングレス圧縮
 
 string を入力
