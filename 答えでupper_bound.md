@@ -1,5 +1,8 @@
 # 答えでupper_bound
 
+
+intを返すtest()を作っておく必要がある
+
 ```cpp
 
 int bs(int x){
