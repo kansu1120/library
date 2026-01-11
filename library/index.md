@@ -15,7 +15,7 @@
 
 ## 基本・テンプレ
 
-- [template](template.)
+- [template](template.md)
 - [便利なやつ](便利なやつ.md)
 
 ---
