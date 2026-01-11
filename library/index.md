@@ -1,5 +1,16 @@
 # kansu cpp-library
 
+
+
+## 🔍 検索
+
+<input type="text" id="searchBox" placeholder="検索..." style="width: 100%; padding: 8px;">
+<ul id="searchResults"></ul>
+
+<script src="search.js"></script>
+
+
+
 ---
 
 ## 基本・テンプレ
