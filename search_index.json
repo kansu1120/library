@@ -1,6 +1,6 @@
 [
   {"title":"template","url":"template.html","content":"C++ テンプレート 競技プログラミング 初期設定 便利"},
-  {"title":"便利なやつ","url":"便利なやつ.md","content":"C++ 競プロ 定型文 便利関数"},
+  {"title":"便利なやつ","url":"便利なやつ.html","content":"C++ 競プロ 定型文 便利関数"},
   
   {"title":"データ構造まとめ","url":"データ構造.md","content":"vector set map queue stack priority_queue データ構造"},
   {"title":"セグ木まとめ","url":"セグ木まとめ.md","content":"segment tree RMQ RSQ 遅延セグ木 区間更新"},
