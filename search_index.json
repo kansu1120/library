@@ -1,5 +1,5 @@
 [
-  {"title":"template","url":"template.md","content":"C++ テンプレート 競技プログラミング 初期設定 便利"},
+  {"title":"template","url":"template.html","content":"C++ テンプレート 競技プログラミング 初期設定 便利"},
   {"title":"便利なやつ","url":"便利なやつ.md","content":"C++ 競プロ 定型文 便利関数"},
   
   {"title":"データ構造まとめ","url":"データ構造.md","content":"vector set map queue stack priority_queue データ構造"},
