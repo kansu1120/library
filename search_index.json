@@ -45,6 +45,7 @@
   {"title":"強連結成分分解","url":"強連結成分分解.html","content":"SCC Kosaraju Tarjan 強連結成分分解 romaji: kyou renketsu"},
   {"title":"木直径","url":"木直径.html","content":"tree diameter BFS DFS 木の直径 最長経路 romaji: ki chokkei"},
   {"title":"ワーシャルフロイド","url":"ワーシャルフロイド.html","content":"floyd warshall APSP all pairs shortest path graph romaji: warshall floyd"},
+  {"title":"ダイクストラ","url":"ダイクストラ.html","content":"ダイクストラ dijk shortest path graph"},
   
   {"title":"最大フロー","url":"最大フロー.html","content":"max flow dinic push relabel フロー 最大流 romaji: saidai flow"},
   {"title":"フローまとめ","url":"フローまとめ.html","content":"flow max bipartite matching matching 二部グラフ romaji: flow matome"},
