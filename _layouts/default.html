@@ -34,6 +34,16 @@
   pre, code {
     font-size: 16px;
   }
+
+  /* スマホではサイドバーを消す */
+  @media (max-width: 800px) {
+    #sidebar {
+      display: none;
+    }
+    #main {
+      margin-left: 0;
+    }
+  }
 </style>
 
 <link rel="stylesheet"
