@@ -1,9 +1,3 @@
----
-layout: defult
----
-
-
-
 # kansu_cpp_library
 
 <!-- 検索ボックス -->
