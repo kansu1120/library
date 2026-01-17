@@ -262,7 +262,7 @@
   {
     "title": "累積和",
     "url": "累積和.html",
-    "content": "# 累積和をやるためのライブラリ   ```cpp template<typename T> class rui{     public:     vector<T> v;     rui(const vector<T>& a){         v = a;         for(int i = 1;i < a.size();i++){             v[i] += v[i-1];         }     }     T query(int l,int r){         if(l == 0){             return v[r];         }         else{             return v[r] - v[l-1];         }     } }; ``` "
+    "content": "# 累積和をやるためのライブラリ   rui R(v)でvを累積和にしたRを作れる  queryで(l,r)の範囲の和を求められる   ```cpp template<typename T> class rui{     public:     vector<T> v;     rui(const vector<T>& a){         v = a;         for(int i = 1;i < a.size();i++){             v[i] += v[i-1];         }     }     T query(int l,int r){         if(l == 0){             return v[r];         }         else{             return v[r] - v[l-1];         }     } }; ``` "
   },
   {
     "title": "累積和まとめ",
