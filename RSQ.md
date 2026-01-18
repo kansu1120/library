@@ -8,8 +8,6 @@
 
 
 ```cpp
-
-
 class segmenttree{
 public:
     long long siz = 1;
@@ -27,23 +25,20 @@ public:
             v[i] = v[i*2]+v[i*2+1];
         }
     } 
-    long long query(long long L, long long R){   // 添字、L , R
-        long long ans = 0;
-        function<void(long long,long long,long long)> f = [&](long long s,long long l,long long r){
-            if(l >= L && r <= R){
-                ans += v[s];
-                return;
-            }
-            if(r < L || l > R)return;
-            f(s*2,l,(l+r)/2);
-            f(s*2+1,(l+r)/2+1,r);
-            return;
-        };
-        f(1,0,siz-1);
-        return ans;
+    long long query(int l,int r){
+        return query(l,r,1,0,siz-1);
     }
-    long long pos(long long p){
-        return query(p,p);
+    private : 
+    long long query(int L,int R,int s,int l,int r){
+        long long ans = 0;
+        if(l >= L && r <= R){
+            ans += v[s];
+            return ans;
+        }
+        if(r < L || l > R)return 0;
+        ans += query(L,R,s*2,l,(l+r)/2);
+        ans += query(L,R,s*2+1,(l+r)/2+1,r);
+        return ans;
     }
 };
 
