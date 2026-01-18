@@ -12,15 +12,22 @@
       margin: 0;
     }
 
-    /* ===== 上固定メニューバー ===== */
+    /* ===== メニューバー ===== */
     .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
       background: #fff;
       border-bottom: 1px solid #ddd;
       z-index: 1000;
+    }
+
+    .topbar.pinned {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .topbar.unpinned {
+      position: static;
     }
 
     .topbar-inner {
@@ -49,12 +56,21 @@
       color: #000;
     }
 
-    /* ===== 本文コンテナ ===== */
+    /* ピンボタン */
+    #pinBtn {
+      margin-left: 20px;
+      cursor: pointer;
+      font-size: 18px;
+      background: none;
+      border: none;
+    }
+
+    /* ===== 本文 ===== */
     .container {
       max-width: 900px;
       margin: 0 auto;
       padding: 40px;
-      margin-top: 70px; /* ← メニューバー分の余白 */
+      transition: margin-top 0.2s;
     }
 
     pre, code {
@@ -69,15 +85,15 @@
     }
   </style>
 
-  <!-- highlight.js（既存機能そのまま） -->
+  <!-- highlight.js -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 
 <body>
 
-  <!-- ===== 追加：上固定メニューバー ===== -->
-  <header class="topbar">
+  <!-- ===== メニューバー ===== -->
+  <header class="topbar pinned">
     <div class="topbar-inner">
       <a href="{{ '/' | relative_url }}" class="logo">
         kansu cpp library
@@ -85,16 +101,18 @@
 
       <nav class="menu">
         <a href="{{ '/' | relative_url }}">Home</a>
-        <a href="{{ '/一覧' | relative_url }}">一覧</a>
-        <a href="{{ '/累積和' | relative_url }}">累積和まとめ</a>
-        <a href="{{ '/数学' | relative_url }}">数学まとめ</a>
-        <a href="{{ '/グラフ' | relative_url }}">グラフまとめ</a>
+        <a href="{{ '/template' | relative_url }}">Template</a>
+        <a href="{{ '/累積和' | relative_url }}">累積和</a>
+        <a href="{{ '/数学' | relative_url }}">数学</a>
+        <a href="{{ '/グラフ' | relative_url }}">グラフ</a>
         <a href="{{ '/データ構造' | relative_url }}">データ構造</a>
       </nav>
+
+      <button id="pinBtn" title="Pin / Unpin">📌</button>
     </div>
   </header>
 
-  <!-- ===== 既存の本文エリア（変更なし） ===== -->
+  <!-- ===== 本文 ===== -->
   <div class="container">
 
     <div style="margin-bottom:24px; font-size:0.95em;">
@@ -107,7 +125,7 @@
 
   </div>
 
-  <!-- ===== 既存のフッター（変更なし） ===== -->
+  <!-- ===== フッター ===== -->
   <footer>
     <div>created by kansu</div>
     <div>
@@ -118,10 +136,32 @@
     </div>
   </footer>
 
-  <!-- ===== 既存の JS（全部維持） ===== -->
+  <!-- ===== JS ===== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
   <script src="{{ '/library/copy.js' | relative_url }}"></script>
+
+  <!-- ピン切り替え -->
+  <script>
+    const bar = document.querySelector('.topbar');
+    const btn = document.getElementById('pinBtn');
+    const container = document.querySelector('.container');
+
+    function updateMargin() {
+      container.style.marginTop =
+        bar.classList.contains('pinned') ? '70px' : '0';
+    }
+
+    // 初期状態
+    updateMargin();
+
+    btn.addEventListener('click', () => {
+      bar.classList.toggle('pinned');
+      bar.classList.toggle('unpinned');
+      btn.textContent = bar.classList.contains('pinned') ? '📌' : '📍';
+      updateMargin();
+    });
+  </script>
 
 </body>
 </html>
