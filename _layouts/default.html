@@ -19,20 +19,18 @@
       --bg: #fdfdfd;
       --text: #111;
       --muted: #666;
-      --accent: #7a1f1f; /* 深い赤 */
+      --accent: #7a1f1f;
       --code-bg: #111;
       --code-text: #eaeaea;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, sans-serif;
       line-height: 1.65;
     }
 
@@ -41,11 +39,12 @@
       min-height: 100vh;
     }
 
-    /* ===== サイドバー（目次のみ） ===== */
+    /* ===== サイドバー ===== */
     .sidebar {
       width: 220px;
       padding: 28px 20px;
       flex-shrink: 0;
+      background: var(--bg);
     }
 
     .logo {
@@ -55,9 +54,7 @@
       letter-spacing: 0.02em;
     }
 
-    .logo .accent {
-      color: var(--accent);
-    }
+    .logo .accent { color: var(--accent); }
 
     .toc a {
       display: block;
@@ -68,10 +65,7 @@
       padding-left: 8px;
     }
 
-    .toc a.active {
-      color: var(--accent);
-      font-weight: 500;
-    }
+    .toc a:hover { color: var(--accent); }
 
     /* ===== 本文 ===== */
     .content {
@@ -86,20 +80,9 @@
       margin-bottom: 0.8em;
     }
 
-    p {
-      margin: 1em 0;
-    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* ===== コード ===== */
     pre {
       background: var(--code-bg);
       color: var(--code-text);
@@ -111,12 +94,6 @@
       line-height: 1.6;
     }
 
-    code {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.95em;
-    }
-
-    /* ===== フッター ===== */
     footer {
       margin-top: 64px;
       font-size: 13px;
@@ -124,27 +101,81 @@
       text-align: center;
     }
 
-    /* ===== モバイル ===== */
+    /* ===== スマホ用ドロワー ===== */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: var(--bg);
+      padding: 0 16px;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .hamburger {
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 1500;
+    }
+
     @media (max-width: 800px) {
-      .layout {
-        flex-direction: column;
-      }
+      .layout { flex-direction: column; }
+
       .sidebar {
-        width: 100%;
-        border-bottom: 1px solid #eee;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 1800;
       }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-header {
+        display: flex;
+      }
+
       .content {
-        padding: 32px 20px 60px 20px;
+        padding: 80px 20px 60px 20px;
+      }
+
+      .overlay.show {
+        display: block;
       }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- スマホ用ヘッダー -->
+  <div class="mobile-header">
+    <div class="hamburger" id="hamburger">≡</div>
+  </div>
+
+  <!-- 暗転背景 -->
+  <div class="overlay" id="overlay"></div>
+
   <div class="layout">
 
-    <!-- ===== サイドバー ===== -->
-    <aside class="sidebar">
+    <!-- サイドバー -->
+    <aside class="sidebar" id="sidebar">
       <div class="logo">
         <span class="accent">kansu</span> cpp library
       </div>
@@ -158,7 +189,7 @@
       </nav>
     </aside>
 
-    <!-- ===== 本文 ===== -->
+    <!-- 本文 -->
     <main class="content">
       {{ content }}
 
@@ -179,7 +210,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
 
-  <!-- 既存のコピー機能 -->
+  <!-- コピー機能 -->
   <script src="{{ '/library/copy.js' | absolute_url }}"></script>
+
+  <!-- ドロワー制御 -->
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("show");
+    });
+  </script>
+
 </body>
 </html>
