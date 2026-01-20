@@ -5,36 +5,33 @@
 <title>{{ page.title }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- highlight.js -->
 <link rel="stylesheet"
  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+/* ===== Base ===== */
 body{
   margin:0;
-  font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:"Noto Serif JP", serif;
   background:#ffffff;
   color:#b88160;
+  line-height:1.8;
   overflow-x:hidden;
 }
 
 /* ===== Link ===== */
 a{
-  color:#cd7272;
+  color:red;
   text-decoration:none;
 }
-
 a:hover{
   text-decoration:underline;
-}
-
-/* ロゴだけは下線を出さない */
-.header-logo,
-.header-logo:hover,
-.header-logo:focus,
-.header-logo:active{
-  text-decoration:none;
 }
 
 /* ===== Header ===== */
@@ -56,21 +53,30 @@ a:hover{
   margin-right:12px;
 }
 
+/* ===== Logo ===== */
 .header-logo{
-  font-family:"Parisienne", cursive;
-  letter-spacing:0.05em;
-  font-size:28px;
-  line-height:1;
+  font-family:"Bubbler One", sans-serif;
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  text-decoration:none !important;   /* ← 下線完全防止 */
+}
+
+.header-logo:hover{
+  text-decoration:none;
 }
 
 .logo-main{
+  font-size:30px;
+  letter-spacing:0.08em;
   color:#7a0f18;
 }
 
 .logo-sub{
-  color:#858585;
-  font-size:0.7em;
-  margin-left:4px;
+  font-size:20px;
+  letter-spacing:0.15em;
+  color:#999;
+  margin-bottom:2px;
 }
 
 /* ===== Sidebar ===== */
@@ -111,6 +117,12 @@ a:hover{
   max-width:900px;
 }
 
+/* ===== Headings ===== */
+h1,h2,h3{
+  color:#7a0f18;
+  font-weight:500;
+}
+
 /* ===== Code ===== */
 pre{
   background:#f6f7f9 !important;
@@ -138,6 +150,10 @@ footer{
   color:#aaa;
 }
 
+footer a{
+  color:#999;
+}
+
 /* ===== Mobile ===== */
 @media (max-width: 800px){
   .main{
@@ -151,6 +167,7 @@ footer{
 
 <div class="header">
   <div class="hamburger" onclick="toggleSidebar()">☰</div>
+
   <a href="{{ '/' | absolute_url }}" class="header-logo">
     <span class="logo-main">kansu</span>
     <span class="logo-sub">C++ Library</span>
@@ -180,8 +197,12 @@ footer{
   </div>
 </footer>
 
+<!-- highlight.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+
+<!-- コピー用JS -->
+<script src="{{ '/library/copy.js' | absolute_url }}"></script>
 
 <script>
 function toggleSidebar(){
