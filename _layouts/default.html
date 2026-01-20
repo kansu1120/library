@@ -5,119 +5,181 @@
   <title>{{ page.title }}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <style>
-    body {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.4;
-      font-family: sans-serif;
-    }
-
-    /* ===== メニューバー ===== */
-    .menu-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-      background: #222;
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      z-index: 1000;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    /* 左端のロゴ */
-    .logo {
-      display: flex;
-      align-items: center;
-      margin-right: 24px;
-      flex-shrink: 0;
-      text-decoration: none;
-    }
-
-    .menu-bar a {
-      color: white;
-      text-decoration: none;
-      margin-right: 16px;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .menu-bar a:hover {
-      text-decoration: underline;
-    }
-
-    /* ===== 本文 ===== */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 72px 40px 40px 40px; /* 上はメニュー分 */
-    }
-
-    pre, code {
-      font-size: 16px;
-    }
-  </style>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- highlight.js -->
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+  <style>
+    :root {
+      --bg: #fdfdfd;
+      --text: #111;
+      --muted: #666;
+      --accent: #7a1f1f; /* 深い赤 */
+      --code-bg: #111;
+      --code-text: #eaeaea;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== サイドバー（目次のみ） ===== */
+    .sidebar {
+      width: 220px;
+      padding: 28px 20px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+
+    .logo .accent {
+      color: var(--accent);
+    }
+
+    .toc a {
+      display: block;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      margin: 10px 0;
+      padding-left: 8px;
+    }
+
+    .toc a.active {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ===== 本文 ===== */
+    .content {
+      flex: 1;
+      max-width: 900px;
+      padding: 56px 64px 80px 64px;
+    }
+
+    h1, h2, h3 {
+      font-weight: 600;
+      margin-top: 2.2em;
+      margin-bottom: 0.8em;
+    }
+
+    p {
+      margin: 1em 0;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== コード ===== */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 16px 20px;
+      margin: 24px 0;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.95em;
+    }
+
+    /* ===== フッター ===== */
+    footer {
+      margin-top: 64px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ===== モバイル ===== */
+    @media (max-width: 800px) {
+      .layout {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-bottom: 1px solid #eee;
+      }
+      .content {
+        padding: 32px 20px 60px 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="layout">
 
-  <!-- ===== メニューバー ===== -->
-  <div class="menu-bar">
-    <!-- ロゴ（SVG） -->
-    <a href="{{ '/' | absolute_url }}" class="logo" aria-label="Kansu C++ Library">
-      <svg width="120" height="36" viewBox="0 0 120 36" xmlns="http://www.w3.org/2000/svg">
-        <style>
-          .t1 { font: 600 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -0.02em; }
-          .t2 { font: 500 12px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -0.03em; }
-        </style>
-        <text x="0" y="14" class="t1" fill="white">Kansu</text>
-        <text x="0" y="30" class="t2" fill="white">C++ Library</text>
-      </svg>
-    </a>
+    <!-- ===== サイドバー ===== -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="accent">kansu</span> cpp library
+      </div>
+      <nav class="toc">
+        <a href="{{ '/一覧.html' | absolute_url }}">一覧</a>
+        <a href="{{ '/累積和まとめ.html' | absolute_url }}">累積和</a>
+        <a href="{{ '/数学まとめ.html' | absolute_url }}">数学</a>
+        <a href="{{ '/グラフまとめ.html' | absolute_url }}">グラフ</a>
+        <a href="{{ '/データ構造.html' | absolute_url }}">データ構造</a>
+        <a href="{{ '/二分探索.html' | absolute_url }}">二分探索</a>
+      </nav>
+    </aside>
 
-    <!-- ナビゲーション -->
-    <a href="{{ '/一覧.html' | absolute_url }}">一覧</a>
-    <a href="{{ '/累積和まとめ.html' | absolute_url }}">累積和</a>
-    <a href="{{ '/数学まとめ.html' | absolute_url }}">数学</a>
-    <a href="{{ '/グラフまとめ.html' | absolute_url }}">グラフ</a>
-    <a href="{{ '/データ構造.html' | absolute_url }}">データ構造</a>
-    <a href="{{ '/二分探索.html' | absolute_url }}">二分探索</a>
+    <!-- ===== 本文 ===== -->
+    <main class="content">
+      {{ content }}
+
+      <footer>
+        <div>created by kansu</div>
+        <div>
+          <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}"
+             target="_blank" rel="noopener">
+            Source on GitHub
+          </a>
+        </div>
+      </footer>
+    </main>
+
   </div>
-
-  <!-- ===== ページ本文 ===== -->
-  <div class="container">
-    {{ content }}
-  </div>
-
-  <!-- ===== フッター ===== -->
-  <footer style="
-    text-align: center;
-    margin: 40px 0 20px 0;
-    font-size: 0.9em;
-    color: #666;
-  ">
-    <div>created by kansu</div>
-    <div>
-      <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}"
-         target="_blank" rel="noopener">
-        Source on GitHub
-      </a>
-    </div>
-  </footer>
 
   <!-- highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
-  <script src="{{ '/library/copy.js' | absolute_url }}"></script>
 
+  <!-- 既存のコピー機能 -->
+  <script src="{{ '/library/copy.js' | absolute_url }}"></script>
 </body>
 </html>
