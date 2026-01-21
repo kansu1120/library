@@ -13,23 +13,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+/* ===== 全体 ===== */
 body{
   margin:0;
   font-family:"Noto Serif JP", serif;
-  background:#ffe9e4;
-  color:#412e22;
+  background:#fffdfa;
+  color:#332f2c;
   line-height:1.8;
   overflow-x:hidden;
 }
 
-a{ color:rgb(89,58,58); text-decoration:none; }
+a{ color:#8b0000; text-decoration:none; }
 a:hover{ text-decoration:underline; }
 
+/* ===== ヘッダー ===== */
 .header{
   position:fixed;
   top:0; left:0; right:0;
   height:52px;
-  background:#ffe9e4;
+  background:#fffdfa;
   border-bottom:1px solid #eee;
   display:flex;
   align-items:center;
@@ -68,6 +70,7 @@ a:hover{ text-decoration:underline; }
   margin-bottom:2px;
 }
 
+/* ===== サイドバー ===== */
 .sidebar{
   position:fixed;
   top:52px;
@@ -92,6 +95,7 @@ a:hover{ text-decoration:underline; }
   margin:10px 0;
 }
 
+/* ===== オーバーレイ ===== */
 .overlay{
   position:fixed;
   inset:0;
@@ -107,14 +111,39 @@ a:hover{ text-decoration:underline; }
   pointer-events:auto;
 }
 
+/* ===== メイン ===== */
 .main{
   padding:80px 40px 40px;
   max-width:900px;
 }
 
-pre{ background:#f2f3f5 !important; border-radius:6px; padding:12px; }
-code{ background:#f0f1f3; padding:2px 4px; border-radius:4px; }
+/* ===== コードブロック ===== */
+pre{
+  background:#f4f4f7;
+  border-left:4px solid #7a0f18;
+  padding:16px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-family: "Fira Code", monospace;
+  font-size:15px;
+  color:#222;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
 
+code{
+  background:#ececf0;
+  border-radius:4px;
+  padding:2px 5px;
+  color:#7a0f18;
+  font-family: "Fira Code", monospace;
+  font-size:14px;
+}
+
+.hljs{
+  background:transparent !important;
+}
+
+/* ===== フッター ===== */
 footer{
   text-align:center;
   margin:40px 0 20px;
@@ -125,6 +154,13 @@ footer{
   font-size:18px;
   letter-spacing:0.15em;
   color:#999;
+}
+
+/* ===== モバイル調整 ===== */
+@media (max-width: 800px){
+  .main{
+    padding:80px 20px 40px;
+  }
 }
 </style>
 </head>
