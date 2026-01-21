@@ -1,7 +1,7 @@
 
-<!-- 検索ボックス -->
-<input type="text" id="searchBox" placeholder="検索" style="width: 50%; padding: 8px; margin-bottom: 16px;">
-<ul id="searchResults"></ul>
+  <!-- 検索ボックス（既存 search.js 使用） -->
+  <input type="text" id="searchBox" placeholder="検索" style="width: 70%; padding: 8px; margin-bottom: 16px;">
+  <ul id="searchResults" style="list-style:none; padding-left:0;"></ul>
 
 <script src="search.js"></script>
 
