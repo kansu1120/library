@@ -89,10 +89,20 @@ a:hover{ text-decoration:underline; }
   box-shadow:4px 0 12px rgba(0,0,0,0.15);
 }
 
+.sidebar input[type="text"]{
+  width:100%;
+  padding:6px 8px;
+  margin-bottom:12px;
+  border-radius:6px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+
 .sidebar a{
   display:block;
   color:#b88160;
-  margin:10px 0;
+  margin:6px 0;
+  font-size:14px;
 }
 
 /* ===== オーバーレイ ===== */
@@ -176,6 +186,9 @@ footer{
 </div>
 
 <div class="sidebar" id="sidebar">
+  <!-- ★ サイドバー検索 -->
+  <input type="text" id="sidebar-search" placeholder="検索..." onkeyup="filterSidebar()">
+
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
   <a href="{{ '/数学まとめ.html' | relative_url }}">数学</a>
@@ -205,6 +218,7 @@ footer{
 <script>
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("overlay");
+const searchInput = document.getElementById("sidebar-search");
 
 function toggleSidebar(){
   sidebar.classList.toggle("open");
@@ -213,6 +227,16 @@ function toggleSidebar(){
 function closeSidebar(){
   sidebar.classList.remove("open");
   overlay.classList.remove("active");
+}
+
+// ★ サイドバー検索機能
+function filterSidebar(){
+  const filter = searchInput.value.toLowerCase();
+  const links = sidebar.getElementsByTagName('a');
+  for(let i=0;i<links.length;i++){
+    const txt = links[i].textContent.toLowerCase();
+    links[i].style.display = txt.includes(filter) ? 'block' : 'none';
+  }
 }
 </script>
 
