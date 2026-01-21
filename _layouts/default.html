@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-/* ===== 全体 ===== */
 body{
   margin:0;
   font-family:"Noto Serif JP", serif;
@@ -26,7 +25,6 @@ body{
 a{ color:#8b0000; text-decoration:none; }
 a:hover{ text-decoration:underline; }
 
-/* ===== ヘッダー ===== */
 .header{
   position:fixed;
   top:0; left:0; right:0;
@@ -70,7 +68,6 @@ a:hover{ text-decoration:underline; }
   margin-bottom:2px;
 }
 
-/* ===== サイドバー ===== */
 .sidebar{
   position:fixed;
   top:52px;
@@ -89,15 +86,6 @@ a:hover{ text-decoration:underline; }
   box-shadow:4px 0 12px rgba(0,0,0,0.15);
 }
 
-.sidebar input[type="text"]{
-  width:100%;
-  padding:6px 8px;
-  margin-bottom:12px;
-  border-radius:6px;
-  border:1px solid #ddd;
-  font-size:14px;
-}
-
 .sidebar a{
   display:block;
   color:#b88160;
@@ -105,7 +93,6 @@ a:hover{ text-decoration:underline; }
   font-size:14px;
 }
 
-/* ===== オーバーレイ ===== */
 .overlay{
   position:fixed;
   inset:0;
@@ -121,20 +108,18 @@ a:hover{ text-decoration:underline; }
   pointer-events:auto;
 }
 
-/* ===== メイン ===== */
 .main{
   padding:80px 40px 40px;
   max-width:900px;
 }
 
-/* ===== コードブロック ===== */
 pre{
   background:#f4f4f7;
   border-left:4px solid #7a0f18;
   padding:16px;
   border-radius:8px;
   overflow-x:auto;
-  font-family: "Fira Code", monospace;
+  font-family:"Fira Code", monospace;
   font-size:15px;
   color:#222;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
@@ -145,7 +130,7 @@ code{
   border-radius:4px;
   padding:2px 5px;
   color:#7a0f18;
-  font-family: "Fira Code", monospace;
+  font-family:"Fira Code", monospace;
   font-size:14px;
 }
 
@@ -153,7 +138,6 @@ code{
   background:transparent !important;
 }
 
-/* ===== フッター ===== */
 footer{
   text-align:center;
   margin:40px 0 20px;
@@ -166,7 +150,6 @@ footer{
   color:#999;
 }
 
-/* ===== モバイル調整 ===== */
 @media (max-width: 800px){
   .main{
     padding:80px 20px 40px;
@@ -186,8 +169,9 @@ footer{
 </div>
 
 <div class="sidebar" id="sidebar">
-  <!-- ★ サイドバー検索 -->
-  <input type="text" id="sidebar-search" placeholder="検索..." onkeyup="filterSidebar()">
+  <!-- 検索ボックス（既存 search.js 使用） -->
+  <input type="text" id="searchBox" placeholder="検索ゥゥゥ!!!!!" style="width: 100%; padding: 8px; margin-bottom: 16px;">
+  <ul id="searchResults" style="list-style:none; padding-left:0;"></ul>
 
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
@@ -213,12 +197,16 @@ footer{
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+
+<!-- コピー機能 -->
 <script src="{{ '/library/copy.js' | relative_url }}"></script>
+
+<!-- ★ 既存検索機能 -->
+<script src="{{ '/library/search.js' | relative_url }}"></script>
 
 <script>
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("overlay");
-const searchInput = document.getElementById("sidebar-search");
 
 function toggleSidebar(){
   sidebar.classList.toggle("open");
@@ -227,16 +215,6 @@ function toggleSidebar(){
 function closeSidebar(){
   sidebar.classList.remove("open");
   overlay.classList.remove("active");
-}
-
-// ★ サイドバー検索機能
-function filterSidebar(){
-  const filter = searchInput.value.toLowerCase();
-  const links = sidebar.getElementsByTagName('a');
-  for(let i=0;i<links.length;i++){
-    const txt = links[i].textContent.toLowerCase();
-    links[i].style.display = txt.includes(filter) ? 'block' : 'none';
-  }
 }
 </script>
 
