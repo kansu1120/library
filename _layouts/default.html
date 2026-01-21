@@ -13,6 +13,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+.header-search{
+  margin-left:auto;
+  position:relative;
+}
+
+.header-search input{
+  width:180px;
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+.header-search ul{
+  position:absolute;
+  top:36px;
+  right:0;
+  width:240px;
+  max-height:300px;
+  overflow-y:auto;
+  background:#fffdfa;
+  border:1px solid #ddd;
+  border-radius:8px;
+  list-style:none;
+  padding:6px;
+  margin:0;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  z-index:1100;
+}
+
+.header-search li{
+  padding:6px 8px;
+  font-size:14px;
+}
+
+.header-search li a{
+  color:#7a0f18;
+}
+
+
+ 
 body{
   margin:0;
   font-family:"Noto Serif JP", serif;
