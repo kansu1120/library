@@ -22,27 +22,30 @@ body{
   overflow-x:hidden;
 }
 
-a{ color:#6b0f14; text-decoration:none; }
+a{ color:#7a0f18; text-decoration:none; }
 a:hover{ text-decoration:underline; }
 
-/* ===== ヘッダー ===== */
 .header{
   position:fixed;
   top:0; left:0; right:0;
-  height:56px;
+  height:52px;
   background:#ffffff;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #e5e5e5;
   display:flex;
   align-items:center;
-  padding:0 10px;
+  padding:0 8px;
   z-index:1200;
 }
 
 .hamburger{
-  width:50px;
-  text-align:center;
+  width:54px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-size:22px;
   cursor:pointer;
+  user-select:none;
 }
 
 .header-logo{
@@ -50,62 +53,33 @@ a:hover{ text-decoration:underline; }
   display:flex;
   align-items:flex-end;
   gap:6px;
+  text-decoration:none;
 }
 
 .logo-main{
   font-size:28px;
+  letter-spacing:0.1em;
   color:#7a0f18;
 }
 
 .logo-sub{
   font-size:18px;
   letter-spacing:0.15em;
-  color:#aaa;
+  color:#999;
   margin-bottom:2px;
 }
 
-/* ===== 検索（PCヘッダー） ===== */
-.header-search{
-  margin-left:auto;
-  position:relative;
-  width:60%;
-  max-width:280px;
-}
-
-.header-search input{
-  width:100%;
-  padding:6px 10px;
-  border:1px solid #ccc;
-  border-radius:4px;
-}
-
-.header-search ul{
-  position:absolute;
-  top:36px;
-  right:0;
-  width:100%;
-  background:white;
-  list-style:none;
-  padding:6px;
-  margin:0;
-  border:1px solid #ddd;
-  max-height:250px;
-  overflow-y:auto;
-  z-index:2000;
-}
-
-/* ===== サイドバー ===== */
 .sidebar{
   position:fixed;
-  top:56px;
+  top:52px;
   left:0;
   bottom:0;
-  width:240px;
+  width:220px;
   background:#fafafa;
-  padding:16px;
+  padding:14px;
   transform:translateX(-100%);
   transition:0.3s;
-  z-index:1000;
+  z-index:900;
 }
 
 .sidebar.open{
@@ -113,46 +87,56 @@ a:hover{ text-decoration:underline; }
   box-shadow:4px 0 12px rgba(0,0,0,0.15);
 }
 
+.sidebar input{
+  width:60%;
+  padding:6px;
+  margin-bottom:10px;
+  border:1px solid #ccc;
+  font-size:13px;
+}
+
 .sidebar a{
   display:block;
+  color:#7a0f18;
   margin:6px 0;
+  font-size:14px;
 }
 
-/* ===== スマホ時は検索をサイドバーに移動 ===== */
-@media(max-width:800px){
-  .header-search{ display:none; }
-  .sidebar-search{ display:block; }
-}
-@media(min-width:801px){
-  .sidebar-search{ display:none; }
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.25);
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:800;
 }
 
-/* ===== メイン ===== */
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
 .main{
-  padding:90px 40px 40px;
+  padding:80px 40px 40px;
   max-width:900px;
 }
 
-/* ===== コード表示（角丸なし・枠なし・小さめ） ===== */
 pre{
   background:#f5f6f8;
-  padding:14px;
-  overflow-x:auto;
+  padding:12px;
   font-size:13px;
-  border:none;
-  border-radius:0;
+  overflow-x:auto;
 }
 
 code{
-  background:#f0f1f4;
+  background:#f0f1f3;
   padding:2px 4px;
   font-size:13px;
-  border-radius:0;
 }
 
 .hljs{ background:transparent !important; }
 
-/* ===== フッター ===== */
 footer{
   text-align:center;
   margin:40px 0 20px;
@@ -160,6 +144,8 @@ footer{
 
 .footer-brand{
   font-family:"Bubbler One", sans-serif;
+  font-size:16px;
+  letter-spacing:0.15em;
   color:#999;
 }
 </style>
@@ -173,21 +159,10 @@ footer{
     <span class="logo-main">kansu</span>
     <span class="logo-sub">C++ Library</span>
   </a>
-
-  <!-- PC用検索 -->
-  <div class="header-search">
-    <input type="text" id="searchBox" placeholder="検索">
-    <ul id="searchResults"></ul>
-  </div>
 </div>
 
 <div class="sidebar" id="sidebar">
-
-  <!-- スマホ用検索 -->
-  <div class="sidebar-search">
-    <input type="text" id="searchBoxMobile" placeholder="検索" style="width:100%;padding:6px;">
-    <ul id="searchResultsMobile"></ul>
-  </div>
+  <input type="text" id="sidebar-search" placeholder="検索..." onkeyup="filterSidebar()">
 
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
@@ -197,25 +172,47 @@ footer{
   <a href="{{ '/二分探索.html' | relative_url }}">二分探索</a>
 </div>
 
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
 <div class="main">
   {{ content }}
 </div>
 
 <footer>
   <div class="footer-brand">created by kansu</div>
-  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}" target="_blank">Source on GitHub</a>
+  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}"
+     target="_blank" rel="noopener">
+    Source on GitHub
+  </a>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 
 <script src="{{ '/library/copy.js' | relative_url }}"></script>
-<script src="{{ '/library/search.js' | relative_url }}"></script>
 
 <script>
 const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
 function toggleSidebar(){
   sidebar.classList.toggle("open");
+  overlay.classList.toggle("active");
+}
+function closeSidebar(){
+  sidebar.classList.remove("open");
+  overlay.classList.remove("active");
+}
+
+function filterSidebar(){
+  const input = document.getElementById("sidebar-search");
+  const filter = input.value.toLowerCase();
+  const links = document.querySelectorAll(".sidebar a");
+
+  links.forEach(a=>{
+    const text = a.textContent.toLowerCase();
+    a.style.display = text.includes(filter) ? "" : "none";
+  });
 }
 </script>
 
