@@ -10,7 +10,9 @@ if [ -z "$CONTEST_NAME" ]; then
     exit 1
 fi
 
-CONTEST_DIR="contests/$CONTEST_NAME"
+# スクリプトのディレクトリを取得
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONTEST_DIR="$SCRIPT_DIR/$CONTEST_NAME"
 
 if [ ! -f "$CONTEST_DIR/scorer.cpp" ]; then
     echo "エラー: $CONTEST_DIR/scorer.cpp が見つかりません"

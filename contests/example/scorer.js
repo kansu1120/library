@@ -7,7 +7,9 @@ function createScorerModule() {
             // メモリを管理するための簡易実装
             _malloc: function(size) {
                 // 簡易的なメモリアドレスシミュレーション
-                return this._memoryOffset = (this._memoryOffset || 1000) + size;
+                const offset = this._memoryOffset || 1000;
+                this._memoryOffset = offset + size;
+                return offset;
             },
             _free: function(ptr) {
                 // メモリ解放（この実装では何もしない）
@@ -15,7 +17,10 @@ function createScorerModule() {
             
             // 文字列をメモリに書き込む
             stringToUTF8: function(str, ptr, maxBytesToWrite) {
-                const encoded = new TextEncoder().encode(str);
+                let encoded = new TextEncoder().encode(str);
+                if (maxBytesToWrite && encoded.length > maxBytesToWrite - 1) {
+                    encoded = encoded.slice(0, maxBytesToWrite - 1);
+                }
                 this._memory = this._memory || {};
                 this._memory[ptr] = encoded;
                 return encoded.length;

@@ -17,11 +17,11 @@ struct TestCase {
 };
 
 // ユーザーが提出したファイルを解析
-std::vector<TestCase> parseTestCases(const std::string& zipContent) {
+// 注: この実装はテキストファイル形式を想定しています
+// ZIP形式のサポートは将来の拡張として検討可能
+std::vector<TestCase> parseTestCases(const std::string& testContent) {
     std::vector<TestCase> testcases;
-    // ZIPの内容を解析する（簡略化のため、ここでは直接パースする例）
-    // 実際にはZIPを解凍して各ファイルを読む処理が必要
-    std::istringstream iss(zipContent);
+    std::istringstream iss(testContent);
     std::string line;
     
     TestCase tc;
