@@ -1,0 +1,30 @@
+# Jekyll Configuration for kansu C++ Library
+
+# Theme
+theme: null
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Include these files in the build
+include:
+  - _layouts
+  - contests
+
+# Exclude build artifacts and development files
+exclude:
+  - README.md
+  - .gitignore
+  - emsdk/
+  - node_modules/
+  - tmp/
+
+# Plugin settings
+plugins:
+  - jekyll-relative-links
+
+# Relative links configuration
+relative_links:
+  enabled: true
+  collections: false
