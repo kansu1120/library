@@ -30,7 +30,7 @@ a:hover{ text-decoration:underline; }
   top:0; left:0; right:0;
   height:56px;
   background:#ffffff;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #e6e6e6;
   display:flex;
   align-items:center;
   padding:0 10px;
@@ -38,14 +38,13 @@ a:hover{ text-decoration:underline; }
 }
 
 .hamburger{
-  width:56px;
-  height:56px;
+  width:54px;
+  height:54px;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:22px;
   cursor:pointer;
-  user-select:none;
 }
 
 .header-logo{
@@ -53,6 +52,7 @@ a:hover{ text-decoration:underline; }
   display:flex;
   align-items:flex-end;
   gap:6px;
+  text-decoration:none;
 }
 
 .logo-main{
@@ -62,13 +62,12 @@ a:hover{ text-decoration:underline; }
 }
 
 .logo-sub{
-  font-size:20px;
+  font-size:18px;
   letter-spacing:0.15em;
   color:#aaa;
   margin-bottom:2px;
 }
 
-/* ===== 検索（PC: ヘッダー） ===== */
 .header-search{
   margin-left:auto;
   position:relative;
@@ -77,8 +76,8 @@ a:hover{ text-decoration:underline; }
 .header-search input{
   width:180px;
   padding:6px 10px;
+  border-radius:6px;
   border:1px solid #ccc;
-  font-size:14px;
 }
 
 .header-search ul{
@@ -86,52 +85,38 @@ a:hover{ text-decoration:underline; }
   top:36px;
   right:0;
   width:260px;
+  max-height:300px;
+  overflow-y:auto;
   background:#fff;
   border:1px solid #ddd;
+  border-radius:6px;
   list-style:none;
   padding:6px;
   margin:0;
-  max-height:300px;
-  overflow-y:auto;
+  z-index:2000;
 }
 
 .header-search ul:empty{ display:none; }
 
-/* ===== サイドバー ===== */
 .sidebar{
   position:fixed;
   top:56px;
   left:0;
   bottom:0;
   width:240px;
-  background:#fafafa;
+  background:#f9f9f9;
   padding:16px;
   transform:translateX(-100%);
   transition:0.3s;
-  z-index:1000;
+  z-index:1100;
 }
 
-.sidebar.open{
-  transform:translateX(0);
-  box-shadow:4px 0 12px rgba(0,0,0,0.15);
-}
+.sidebar.open{ transform:translateX(0); }
 
 .sidebar a{
   display:block;
   margin:8px 0;
-  font-size:14px;
-}
-
-/* ===== 検索（スマホ: サイドバー） ===== */
-.sidebar-search{
-  display:none;
-  margin-bottom:16px;
-}
-
-.sidebar-search input{
-  width:100%;
-  padding:6px 10px;
-  border:1px solid #ccc;
+  color:#7a0f18;
 }
 
 .overlay{
@@ -141,7 +126,7 @@ a:hover{ text-decoration:underline; }
   opacity:0;
   pointer-events:none;
   transition:0.3s;
-  z-index:900;
+  z-index:1000;
 }
 
 .overlay.active{
@@ -154,34 +139,21 @@ a:hover{ text-decoration:underline; }
   max-width:900px;
 }
 
-/* ===== コード表示（小さめ・角丸なし・枠なし・高級ドキュメント風） ===== */
 pre{
-  background:#f5f6f8;
-  padding:16px;
+  background:#f3f3f5;
+  padding:14px;
   overflow-x:auto;
+  font-size:13px;
   border:none;
   border-radius:0;
-  box-shadow:none;
-  font-family:"Fira Code", monospace;
-  font-size:13px;      /* 小さめ */
-  line-height:1.6;    /* 少し詰める */
-  font-variant-ligatures:none;
 }
 
 code{
-  background:#eceff3;
+  background:#f0f0f3;
   padding:2px 4px;
-  border-radius:0;
-  font-family:"Fira Code", monospace;
   font-size:13px;
-  font-variant-ligatures:none;
 }
 
-.hljs{
-  background:transparent !important;
-}
-
-/* ===== フッター ===== */
 footer{
   text-align:center;
   margin:40px 0 20px;
@@ -189,15 +161,13 @@ footer{
 
 .footer-brand{
   font-family:"Bubbler One", sans-serif;
-  letter-spacing:0.15em;
   color:#aaa;
+  letter-spacing:0.15em;
 }
 
-/* ===== レスポンシブ ===== */
 @media (max-width: 800px){
   .header-search{ display:none; }
   .sidebar-search{ display:block; }
-  .main{ padding:90px 20px 40px; }
 }
 </style>
 </head>
@@ -218,10 +188,8 @@ footer{
 </div>
 
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-search">
-    <input type="text" id="searchBox" placeholder="検索">
-    <ul id="searchResults"></ul>
-  </div>
+  <input type="text" id="searchBoxMobile" placeholder="検索ゥゥゥ!!!!!" style="width:100%; padding:8px; margin-bottom:12px;">
+  <ul id="searchResultsMobile"></ul>
 
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
