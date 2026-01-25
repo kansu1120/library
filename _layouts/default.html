@@ -13,52 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-/* ===== 検索（ヘッダー） ===== */
-.header-search{
-  margin-left:auto;
-  margin-right:32px;
-  position:relative;
-}
-
-.header-search input{
-  width:180px;
-  padding:6px 10px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
-
-.header-search ul:empty{
-  display:none;
-}
-
-.header-search ul{
-  position:absolute;
-  top:36px;
-  right:0;
-  width:240px;
-  max-height:300px;
-  overflow-y:auto;
-  background:#fffdfa;
-  border:1px solid #ddd;
-  border-radius:8px;
-  list-style:none;
-  padding:6px;
-  margin:0;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  z-index:1300;
-}
-
-.header-search li{
-  padding:6px 8px;
-  font-size:14px;
-}
-
-.header-search li a{
-  color:#7a0f18;
-}
-
-/* ===== 全体 ===== */
 body{
   margin:0;
   font-family:"Noto Serif JP", serif;
@@ -71,7 +25,6 @@ body{
 a{ color:#8b0000; text-decoration:none; }
 a:hover{ text-decoration:underline; }
 
-/* ===== ヘッダー ===== */
 .header{
   position:fixed;
   top:0; left:0; right:0;
@@ -92,15 +45,6 @@ a:hover{ text-decoration:underline; }
   justify-content:center;
   font-size:22px;
   cursor:pointer;
-  user-select:none;
-}
-
-/* ★ ロゴ下線無効（追加） */
-.header-logo,
-.header-logo:hover,
-.header-logo:active,
-.header-logo:focus{
-  text-decoration:none;
 }
 
 .header-logo{
@@ -108,6 +52,7 @@ a:hover{ text-decoration:underline; }
   display:flex;
   align-items:flex-end;
   gap:6px;
+  text-decoration:none;
 }
 
 .logo-main{
@@ -123,7 +68,39 @@ a:hover{ text-decoration:underline; }
   margin-bottom:2px;
 }
 
-/* ===== サイドバー ===== */
+.header-search{
+  margin-left:auto;
+  margin-right:32px;
+  position:relative;
+}
+
+.header-search input,
+.sidebar-search input{
+  width:180px;
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+.header-search ul,
+.sidebar-search ul{
+  position:absolute;
+  top:36px;
+  right:0;
+  width:240px;
+  max-height:300px;
+  overflow-y:auto;
+  background:#fffdfa;
+  border:1px solid #ddd;
+  border-radius:8px;
+  list-style:none;
+  padding:6px;
+  margin:0;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  z-index:1300;
+}
+
 .sidebar{
   position:fixed;
   top:52px;
@@ -144,12 +121,16 @@ a:hover{ text-decoration:underline; }
 
 .sidebar a{
   display:block;
-  color:#b88160;
-  margin:6px 0;
+  color:#7a0f18;
+  margin:8px 0;
   font-size:14px;
 }
 
-/* ===== オーバーレイ ===== */
+.sidebar-search{
+  position:relative;
+  margin-bottom:16px;
+}
+
 .overlay{
   position:fixed;
   inset:0;
@@ -165,7 +146,6 @@ a:hover{ text-decoration:underline; }
   pointer-events:auto;
 }
 
-/* ===== メイン ===== */
 .main{
   padding:80px 40px 40px;
   max-width:900px;
@@ -178,9 +158,6 @@ pre{
   border-radius:8px;
   overflow-x:auto;
   font-family:"Fira Code", monospace;
-  font-size:15px;
-  color:#222;
-  box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
 
 code{
@@ -189,34 +166,15 @@ code{
   padding:2px 5px;
   color:#7a0f18;
   font-family:"Fira Code", monospace;
-  font-size:14px;
 }
 
-.hljs{
-  background:transparent !important;
-}
+.pc-only{ display:block; }
+.sp-only{ display:none; }
 
-/* ===== フッター ===== */
-footer{
-  text-align:center;
-  margin:40px 0 20px;
-}
-
-.footer-brand{
-  font-family:"Bubbler One", sans-serif;
-  font-size:18px;
-  letter-spacing:0.15em;
-  color:#999;
-}
-
-/* ===== モバイル ===== */
 @media (max-width: 800px){
-  .main{
-    padding:80px 20px 40px;
-  }
-  .header-search input{
-    width:130px;
-  }
+  .main{ padding:80px 20px 40px; }
+  .pc-only{ display:none; }
+  .sp-only{ display:block; }
 }
 </style>
 </head>
@@ -230,13 +188,18 @@ footer{
     <span class="logo-sub">C++ Library</span>
   </a>
 
-  <div class="header-search">
+  <div class="header-search pc-only">
     <input type="text" id="searchBox" placeholder="検索">
     <ul id="searchResults"></ul>
   </div>
 </div>
 
 <div class="sidebar" id="sidebar">
+  <div class="sidebar-search sp-only">
+    <input type="text" id="searchBoxSp" placeholder="検索">
+    <ul id="searchResultsSp"></ul>
+  </div>
+
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
   <a href="{{ '/数学まとめ.html' | relative_url }}">数学</a>
@@ -251,17 +214,12 @@ footer{
   {{ content }}
 </div>
 
-<footer>
-  <div class="footer-brand">created by kansu</div>
-  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}"
-     target="_blank" rel="noopener">
-    Source on GitHub
-  </a>
+<footer style="text-align:center;margin:40px 0 20px;">
+  <div style="font-family:'Bubbler One',sans-serif;color:#999;">created by kansu</div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-
 <script src="{{ '/library/copy.js' | relative_url }}"></script>
 <script src="{{ '/library/search.js' | relative_url }}"></script>
 
@@ -277,6 +235,25 @@ function closeSidebar(){
   sidebar.classList.remove("open");
   overlay.classList.remove("active");
 }
+
+// 検索同期
+const box1 = document.getElementById("searchBox");
+const box2 = document.getElementById("searchBoxSp");
+const result1 = document.getElementById("searchResults");
+const result2 = document.getElementById("searchResultsSp");
+
+function syncSearch(e){
+  const q = e.target.value;
+  if(box1 && box1 !== e.target) box1.value = q;
+  if(box2 && box2 !== e.target) box2.value = q;
+  if(typeof search === "function"){
+    search(q, result1);
+    search(q, result2);
+  }
+}
+
+if(box1) box1.addEventListener("input", syncSearch);
+if(box2) box2.addEventListener("input", syncSearch);
 </script>
 
 </body>
