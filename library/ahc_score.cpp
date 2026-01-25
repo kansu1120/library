@@ -5,6 +5,7 @@ extern "C" {
 extern uint8_t __heap_base;
 static uint32_t heap_ptr = 0;
 // Missing penalty when input/output value pairs are not available.
+// Adjust this value to align with the contest-specific scoring formula.
 constexpr int64_t kMissingPenalty = 1000;
 
 uint32_t alloc(uint32_t size) {
@@ -45,6 +46,7 @@ static int read_int(const uint8_t* data, int32_t size, int32_t* index, int32_t* 
       uint8_t c = data[i];
       if (c < '0' || c > '9') break;
       int digit = c - '0';
+      // Overflow check for value * 10 + digit against INT32_MAX.
       if (value > (INT32_MAX / 10) || (value == INT32_MAX / 10 && digit > (INT32_MAX % 10))) {
         value = INT32_MAX;
         while (i < size) {

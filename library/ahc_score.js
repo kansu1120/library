@@ -200,7 +200,7 @@
       renderResults(rows, { best, worst });
       setStatus(`計算完了: ${rows.length} 件`, "success");
     } catch (error) {
-      console.error(error);
+      console.error("AHC score error:", error);
       setStatus("エラーが発生しました。入力zipやWASMを確認してください。", "error");
       summary.classList.remove("is-visible");
       results.innerHTML = "";
