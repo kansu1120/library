@@ -25,106 +25,51 @@ body{
   font-family:"Noto Serif JP",serif;
   background:var(--bg);
   color:var(--text);
-  line-height:1.9;
 }
-a{color:var(--accent);text-decoration:none;}
-a:hover{text-decoration:underline;}
-
+a{color:var(--accent);text-decoration:none}
 .header{
   position:fixed;top:0;left:0;right:0;
-  height:56px;
-  background:rgba(251,251,251,.95);
+  height:56px;background:rgba(251,251,251,.95);
   border-bottom:1px solid var(--line);
-  display:flex;align-items:center;
-  padding:0 16px;
-  z-index:1200;
-  backdrop-filter:blur(6px);
+  display:flex;align-items:center;padding:0 16px;
+  z-index:1000;backdrop-filter:blur(6px);
 }
-.hamburger{
-  width:48px;height:48px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;cursor:pointer;
-}
+.hamburger{font-size:22px;cursor:pointer;width:40px}
 .header-logo{
-  font-family:"Cinzel",serif;
-  letter-spacing:.15em;
+  font-family:"Cinzel",serif;letter-spacing:.15em;
   display:flex;align-items:flex-end;gap:6px;
-  margin-left:4px;
 }
-.logo-main{font-size:22px;color:var(--accent);}
-.logo-sub{font-size:12px;color:var(--gold);margin-bottom:3px;}
-
-.header-search{margin-left:auto;position:relative;}
-.header-search input{
-  width:60%;
-  padding:6px 10px;
-  border:1px solid var(--line);
-  font-size:14px;
-  background:white;
+.logo-main{font-size:22px;color:var(--accent)}
+.logo-sub{font-size:12px;color:var(--gold)}
+.header-search{margin-left:auto;position:relative}
+#searchBox{
+  width:60%;padding:8px;border:1px solid var(--line);
 }
-.header-search ul{
-  position:absolute;top:36px;right:0;
-  width:260px;
-  background:white;
-  border:1px solid var(--line);
-  list-style:none;
-  padding:8px;margin:0;
+#searchResults{
+  position:absolute;right:0;top:40px;
+  list-style:none;margin:0;padding:8px;
+  background:white;border:1px solid var(--line);
   max-height:300px;overflow:auto;
 }
-.header-search ul:empty{display:none;}
-
 .sidebar{
   position:fixed;top:56px;left:0;bottom:0;
-  width:240px;background:white;
-  border-right:1px solid var(--line);
-  padding:16px;
-  transform:translateX(-100%);
-  transition:.4s cubic-bezier(.22,.61,.36,1);
-  z-index:900;
+  width:240px;background:white;border-right:1px solid var(--line);
+  padding:16px;transform:translateX(-100%);
+  transition:.3s;z-index:900;
 }
-.sidebar.open{transform:translateX(0);}
-.sidebar a{display:block;margin:10px 0;font-size:14px;color:#444;}
-
-.sidebar-search{margin-bottom:12px;}
-.sidebar-search input{
-  width:60%;
-  padding:6px 10px;
-  border:1px solid var(--line);
-}
-
+.sidebar.open{transform:translateX(0)}
+.sidebar a{display:block;margin:10px 0}
 .overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.15);
-  opacity:0;pointer-events:none;
-  transition:.3s;z-index:800;
+  position:fixed;inset:0;background:rgba(0,0,0,.15);
+  opacity:0;pointer-events:none;transition:.3s;
 }
-.overlay.active{opacity:1;pointer-events:auto;}
-
-.main{padding:96px 48px 48px;max-width:900px;margin:auto;}
-
+.overlay.active{opacity:1;pointer-events:auto}
+.main{padding:96px 48px 48px;max-width:900px;margin:auto}
 pre{
-  background:#fff;
-  border:none;
-  border-radius:0;
-  padding:16px;
-  overflow:auto;
-  font-size:13px;
-  font-family:"Fira Code",monospace;
+  background:#f5f5f5;border:none;border-radius:0;
+  padding:16px;font-size:13px;
 }
-code{
-  background:#f0f0f0;
-  padding:2px 5px;
-  font-size:13px;
-}
-.hljs{background:transparent!important;}
-
-footer{text-align:center;margin:60px 0 30px;color:var(--sub);font-size:14px;}
-.footer-brand{font-family:"Cinzel",serif;letter-spacing:.2em;color:var(--gold);}
-
-@media(max-width:800px){
-  .header-search{display:none;}
-  .main{padding:88px 20px 40px;}
-}
+footer{text-align:center;margin:40px 0;color:var(--sub)}
 </style>
 </head>
 
@@ -138,16 +83,12 @@ footer{text-align:center;margin:60px 0 30px;color:var(--sub);font-size:14px;}
   </a>
 
   <div class="header-search">
-    <input type="text" id="headerSearchBox" placeholder="Search">
-    <ul id="headerSearchResults"></ul>
+    <input type="text" id="searchBox" placeholder="検索..." onkeyup="search()">
+    <ul id="searchResults"></ul>
   </div>
 </div>
 
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-search">
-    <input type="text" id="sidebar-search" placeholder="検索..." onkeyup="filterSidebar()">
-  </div>
-
   <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
   <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
   <a href="{{ '/数学まとめ.html' | relative_url }}">数学</a>
@@ -163,8 +104,10 @@ footer{text-align:center;margin:60px 0 30px;color:var(--sub);font-size:14px;}
 </div>
 
 <footer>
-  <div class="footer-brand">KANSU C++ LIBRARY</div>
-  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}" target="_blank">Source on GitHub</a>
+  <div>KANSU C++ LIBRARY</div>
+  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}" target="_blank">
+    Source on GitHub
+  </a>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
