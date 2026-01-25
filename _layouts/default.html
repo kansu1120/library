@@ -1,217 +1,99 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<title>{{ page.title }}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet"
- href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bubbler+One&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<title>Code Viewer</title>
 <style>
-body{
-  margin:0;
-  font-family:"Noto Serif JP", serif;
-  background:#ffffff;
-  color:#2b2b2b;
-  line-height:1.8;
-  overflow-x:hidden;
+body {
+  margin: 0;
+  display: flex;
+  height: 100vh;
+  font-family: sans-serif;
 }
 
-a{ color:#7a0f18; text-decoration:none; }
-a:hover{ text-decoration:underline; }
-
-.header{
-  position:fixed;
-  top:0; left:0; right:0;
-  height:52px;
-  background:#ffffff;
-  border-bottom:1px solid #e5e5e5;
-  display:flex;
-  align-items:center;
-  padding:0 8px;
-  z-index:1200;
+/* ===== サイドバー ===== */
+#sidebar {
+  width: 260px;
+  background: #111;
+  color: white;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.hamburger{
-  width:54px;
-  height:54px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  cursor:pointer;
-  user-select:none;
+#sidebar-search {
+  width: 60%;
+  padding: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
-.header-logo{
-  font-family:"Bubbler One", sans-serif;
-  display:flex;
-  align-items:flex-end;
-  gap:6px;
-  text-decoration:none;
+#file-list div {
+  padding: 6px;
+  cursor: pointer;
 }
 
-.logo-main{
-  font-size:28px;
-  letter-spacing:0.1em;
-  color:#7a0f18;
+#file-list div:hover {
+  background: #333;
 }
 
-.logo-sub{
-  font-size:18px;
-  letter-spacing:0.15em;
-  color:#999;
-  margin-bottom:2px;
+/* ===== コード表示 ===== */
+#main {
+  flex: 1;
+  background: #000;
+  padding: 12px;
+  overflow: auto;
 }
 
-.sidebar{
-  position:fixed;
-  top:52px;
-  left:0;
-  bottom:0;
-  width:220px;
-  background:#fafafa;
-  padding:14px;
-  transform:translateX(-100%);
-  transition:0.3s;
-  z-index:900;
-}
-
-.sidebar.open{
-  transform:translateX(0);
-  box-shadow:4px 0 12px rgba(0,0,0,0.15);
-}
-
-.sidebar input{
-  width:60%;
-  padding:6px;
-  margin-bottom:10px;
-  border:1px solid #ccc;
-  font-size:13px;
-}
-
-.sidebar a{
-  display:block;
-  color:#7a0f18;
-  margin:6px 0;
-  font-size:14px;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.25);
-  opacity:0;
-  pointer-events:none;
-  transition:0.3s;
-  z-index:800;
-}
-
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.main{
-  padding:80px 40px 40px;
-  max-width:900px;
-}
-
-pre{
-  background:#f5f6f8;
-  padding:12px;
-  font-size:13px;
-  overflow-x:auto;
-}
-
-code{
-  background:#f0f1f3;
-  padding:2px 4px;
-  font-size:13px;
-}
-
-.hljs{ background:transparent !important; }
-
-footer{
-  text-align:center;
-  margin:40px 0 20px;
-}
-
-.footer-brand{
-  font-family:"Bubbler One", sans-serif;
-  font-size:16px;
-  letter-spacing:0.15em;
-  color:#999;
+pre {
+  background: #000;
+  color: #0f0;
+  padding: 10px;
+  border: none;        /* 縁なし */
+  border-radius: 0;   /* 角丸なし */
+  font-size: 13px;    /* 文字小さめ */
+  line-height: 1.4;
 }
 </style>
 </head>
-
 <body>
 
-<div class="header">
-  <div class="hamburger" onclick="toggleSidebar()">☰</div>
-  <a href="{{ '/' | relative_url }}" class="header-logo">
-    <span class="logo-main">kansu</span>
-    <span class="logo-sub">C++ Library</span>
-  </a>
-</div>
-
-<div class="sidebar" id="sidebar">
+<div id="sidebar">
   <input type="text" id="sidebar-search" placeholder="検索..." onkeyup="filterSidebar()">
-
-  <a href="{{ '/一覧.html' | relative_url }}">一覧</a>
-  <a href="{{ '/累積和まとめ.html' | relative_url }}">累積和</a>
-  <a href="{{ '/数学まとめ.html' | relative_url }}">数学</a>
-  <a href="{{ '/グラフまとめ.html' | relative_url }}">グラフ</a>
-  <a href="{{ '/データ構造.html' | relative_url }}">データ構造</a>
-  <a href="{{ '/二分探索.html' | relative_url }}">二分探索</a>
+  <div id="file-list">
+    <div onclick="showCode('a')">main.cpp</div>
+    <div onclick="showCode('b')">graph.cpp</div>
+    <div onclick="showCode('c')">math.cpp</div>
+  </div>
 </div>
 
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<div class="main">
-  {{ content }}
+<div id="main">
+  <pre id="code-area">// ファイルを選択してください</pre>
 </div>
-
-<footer>
-  <div class="footer-brand">created by kansu</div>
-  <a href="https://github.com/kansu1120/library/blob/main/{{ page.path }}"
-     target="_blank" rel="noopener">
-    Source on GitHub
-  </a>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-
-<script src="{{ '/library/copy.js' | relative_url }}"></script>
 
 <script>
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
+const codes = {
+  a: `#include <bits/stdc++.h>
+using namespace std;
+int main(){
+  cout << "Hello World";
+}`,
+  b: `struct Edge{int to,cost;};`,
+  c: `long long modpow(long long a,long long n){...}`
+};
 
-function toggleSidebar(){
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("active");
-}
-function closeSidebar(){
-  sidebar.classList.remove("open");
-  overlay.classList.remove("active");
+function showCode(key){
+  document.getElementById("code-area").textContent = codes[key];
 }
 
 function filterSidebar(){
-  const input = document.getElementById("sidebar-search");
-  const filter = input.value.toLowerCase();
-  const links = document.querySelectorAll(".sidebar a");
-
-  links.forEach(a=>{
-    const text = a.textContent.toLowerCase();
-    a.style.display = text.includes(filter) ? "" : "none";
+  const word = document.getElementById("sidebar-search").value.toLowerCase();
+  const items = document.querySelectorAll("#file-list div");
+  items.forEach(e=>{
+    if(e.textContent.toLowerCase().includes(word)){
+      e.style.display = "";
+    }else{
+      e.style.display = "none";
+    }
   });
 }
 </script>
