@@ -3,6 +3,7 @@
 extern "C" {
 extern uint8_t __heap_base;
 static uint32_t heap_ptr = 0;
+constexpr int64_t kMissingPenalty = 1000;
 
 uint32_t alloc(uint32_t size) {
   if (!heap_ptr) {
@@ -20,38 +21,37 @@ void reset_alloc() {
 static int read_int(const uint8_t* data, int32_t size, int32_t* index, int32_t* out) {
   int32_t i = *index;
   while (i < size) {
-    uint8_t c = data[i];
-    if (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
+    while (i < size) {
+      uint8_t c = data[i];
+      if (c == '-' || (c >= '0' && c <= '9')) break;
       ++i;
-      continue;
     }
-    break;
-  }
-  if (i >= size) {
-    *index = i;
-    return 0;
-  }
-  int sign = 1;
-  if (data[i] == '-') {
-    sign = -1;
-    ++i;
-  }
-  int32_t value = 0;
-  int found = 0;
-  while (i < size) {
-    uint8_t c = data[i];
-    if (c < '0' || c > '9') break;
-    value = value * 10 + (c - '0');
-    found = 1;
-    ++i;
-  }
-  if (!found) {
-    *index = (i < size) ? i + 1 : i;
-    return 0;
+    if (i >= size) {
+      *index = i;
+      return 0;
+    }
+    int sign = 1;
+    if (data[i] == '-') {
+      sign = -1;
+      ++i;
+    }
+    int32_t value = 0;
+    int found = 0;
+    while (i < size) {
+      uint8_t c = data[i];
+      if (c < '0' || c > '9') break;
+      value = value * 10 + (c - '0');
+      found = 1;
+      ++i;
+    }
+    if (found) {
+      *index = i;
+      *out = value * sign;
+      return 1;
+    }
   }
   *index = i;
-  *out = value * sign;
-  return 1;
+  return 0;
 }
 
 int64_t score(const uint8_t* input, int32_t input_size, const uint8_t* output, int32_t output_size) {
@@ -73,11 +73,11 @@ int64_t score(const uint8_t* input, int32_t input_size, const uint8_t* output, i
   }
 
   while (in_ok) {
-    total += 1000;
+    total += kMissingPenalty;
     in_ok = read_int(input, input_size, &in_idx, &in_val);
   }
   while (out_ok) {
-    total += 1000;
+    total += kMissingPenalty;
     out_ok = read_int(output, output_size, &out_idx, &out_val);
   }
 
