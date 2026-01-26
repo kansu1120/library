@@ -1,31 +1,21 @@
 ---
 layout: default
-title: Index
 ---
 
 # Index
 
 <ul>
-{% assign pages = site.pages
-  | where_exp: "p", "p.dir == page.dir"
-  | where_exp: "p", "p.name != 'index.md'"
-  | where_exp: "p", "p.ext == '.md'"
-  | sort: "name" %}
-
-{% for p in pages %}
-  <li>
-    <a href="{{ p.url }}">
-      {{ p.name | replace: ".md", "" }}
-    </a>
-  </li>
+{% for f in site.static_files %}
+  {% if f.extname == ".md" %}
+    {% if f.path contains page.dir %}
+      {% unless f.name == "index.md" %}
+        <li>
+          <a href="{{ f.path | replace: ".md", "" }}">
+            {{ f.name | replace: ".md", "" }}
+          </a>
+        </li>
+      {% endunless %}
+    {% endif %}
+  {% endif %}
 {% endfor %}
 </ul>
-
-
-
-
-
-
-
-
-
