@@ -205,11 +205,6 @@
     "content": "# 座標圧縮  結果を入れるmap、逆の復元用のvector、圧縮したいvector　を入れる  mapに圧縮前の座礁を入れると圧縮後の座標が帰ってくる  vectorに圧縮後の座標を入れると圧縮前の座標が帰ってくる  ```cpp void ash(map<int,int>& m,vector<int>& g,vector<int> v){     int n = v.size();     m.clear();     sort(v.begin(),v.end());     int j = 0;     for(int i = 0;i < n;i++){         if(m.count(v[i]))continue;         m[v[i]] = j;         while ((int)g.size() <= j) g.push_back(0);         g[j] = v[i];         j++;     }     return ; } ``` "
   },
   {
-    "title": "強連結成分分解",
-    "url": "強連結成分分解.html",
-    "content": "# 強連結成分分解  強連結成分それぞれをvectorにまとめたvviでreturnが来る  scc( 頂点数　、　vviの形のグラフ　）　でできる  ```cpp vector<vector<int>> scc(int n,const vector<vector<int>>& v){     vector<vector<int>> vv(n);     for(int i = 0;i < n;i++){         for(int j = 0;j < v[i].size();j++){             vv[v[i][j]].push_back(i);         }     }     vector<int> res;     vector<bool> visited(n,false);     function<void(int)> f = [&](int pos){         visited[pos] = true;         for(int i : v[pos]){             if(!visited[i])f(i);         }         res.push_back(pos);     };     for(int i = 0;i < n;i++){         if(!visited[i]){             f(i);         }     }     vector<vector<int>> ans;     visited.assign(n,false);     for(int i = res.size()-1; i >= 0;i--){         if(visited[res[i]])continue;         vector<int> p = {res[i]};         function<void(int)> d = [&](int pos){             visited[pos] = true;             for(int i : vv[pos]){                 if(visited[i])continue;                 p.push_back(i);                 d(i);             }         };         d(res[i]);         ans.push_back(p);     }     return ans; } ``` "
-  },
-  {
     "title": "数列",
     "url": "数列.html",
     "content": "# 数列   - [循環配列での長さwの範囲の和の最大値](rmax.md)  - [循環配列での長さwの範囲の和の最小値](rmin.md)  - [最長増加部分列](最長増加部分列.md)  - [中央値](中央値.md)  - [転倒数](転倒数.md) "
