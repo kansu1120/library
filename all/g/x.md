@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Index
+# Indexxxxx
 
 <ul>
 {% for f in site.static_files %}
