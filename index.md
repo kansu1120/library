@@ -1,27 +1,21 @@
----
-layout: default
-title: Index
----
 
-# Kansu c++ Library
+- [一覧](一覧.md)
 
-{% assign current_dir = page.path | split: "/" | slice: 0, -1 | join: "/" %}
+- [template](template.md)
+  
+- [累積和](累積和まとめ.md)
+  
+- [数学](数学まとめ.md)
+  
+- [グラフ](グラフまとめ.md)
+  
+- [データ構造](データ構造.md)
 
-{% assign pages = site.pages
-  | where_exp: "p", "p.path contains current_dir"
-  | where_exp: "p", "p.name != 'index.md'"
-  | where_exp: "p", "p.path contains '.md'"
-  | sort: "path" %}
+- [二分探索](二分探索.md)
 
-<ul>
-{% for p in pages %}
-  <li>
-    <a href="{{ p.url }}">
-      {{ p.name | replace: ".md", "" }}
-    </a>
-  </li>
-{% endfor %}
-</ul>
+- [その他典型](その他典型.md)
+  
+
 
 
 
