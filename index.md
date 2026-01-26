@@ -9,7 +9,7 @@
   
 - [グラフ](all/グラフ/index.md)
   
-- [データ構造](all/グラフ/index.md)
+- [データ構造](all/データ構造/index.md)
 
 - [二分探索](all/二分探索/index.md)
 
