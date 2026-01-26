@@ -3,7 +3,7 @@ layout: default
 title: その他典型
 ---
 
-# その他典型
+# その他典型 便利なやつ
 
 <ul>
 {% assign md_pages = site.pages
