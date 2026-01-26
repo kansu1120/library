@@ -1,3 +1,15 @@
 collections:
+  グラフ:
+    output: true
+  その他典型:
+    output: true
+  二分探索:
+    output: true
+  データ構造:
+    output: true
+  数学:
+    output: true
+  累積和:
+    output: true
   g:
     output: true
