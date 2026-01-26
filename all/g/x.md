@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Index
+# Indexxx
 
 <ul>
 {% assign base = page.path | replace: "index.md", "" %}
