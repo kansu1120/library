@@ -5,7 +5,7 @@
   
 - [累積和](all/累積和.index.md)
   
-- [数学](all/数学/index.md)
+- [数学](libray/all/数学/index.md)
   
 - [グラフ](all/グラフ/index.md)
   
