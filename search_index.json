@@ -152,7 +152,7 @@
   {
     "title": "一覧",
     "url": "一覧.html",
-    "content": "--- layout: default title: 一覧 permalink: /一覧/ ---  # 一覧  {% assign genres = \"数学,累積和,グラフ,構造体,二分探索,その他典型\" | split: \",\" %}  {% for genre in genres %}   <h2>{{ genre }}</h2>   <ul>     {% for p in site.pages %}       {% if p.path contains 'all/' and p.path contains genre and p.name != 'index.md' %}         <li>           <a href=\"/library{{ p.url }}\">             {{ p.title | default: p.name | replace: \".md\", \"\" }}           </a>         </li>       {% endif %}     {% endfor %}   </ul> {% endfor %} "
+    "content": "--- layout: default title: 一覧 permalink: /一覧/ ---  # ライブラリ一覧  {% assign genres = \"数学,累積和,グラフ,構造体,二分探索,その他典型\" | split: \",\" %}  {% for genre in genres %}   <h2>{{ genre }}</h2>   <ul>     {% for p in site.pages %}       {% if p.path contains 'all/' and p.path contains genre and p.name != 'index.md' %}         <li>           <a href=\"/library{{ p.url }}\">             {{ p.title | default: p.name | replace: \".md\", \"\" }}           </a>         </li>       {% endif %}     {% endfor %}   </ul> {% endfor %} "
   },
   {
     "title": "中央値",
