@@ -15,8 +15,6 @@
 
 - [その他典型](all/その他典型/index.md)
 
-- [制作用全文](ライブラリ全文.md)
-
 - [add file](add_file.md)
   
 
