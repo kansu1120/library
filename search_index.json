@@ -25,6 +25,11 @@
     "content": "# 区間和のセグ木   segmenttree 名前(サイズ)　で定義   名前.update( i , x ) で i 番目の要素を x に変更   名前.query( l , r ) で l から r の範囲内の合計値を取得   ```cpp class segmenttree{ public:     long long siz = 1;     vector<long long> v;     segmenttree (long long n){         siz = 1;         while(siz < n)siz *= 2;         v.assign(2*siz,0);     }     void update(long long i, long long x){         i += siz;         v[i] = x;         while(i > 1){             i /= 2;             v[i] = v[i*2]+v[i*2+1];         }     }      long long query(int l,int r){         return query(l,r,1,0,siz-1);     }     private :      long long query(int L,int R,int s,int l,int r){         long long ans = 0;         if(l >= L && r <= R){             ans += v[s];             return ans;         }         if(r < L || l > R)return 0;         ans += query(L,R,s*2,l,(l+r)/2);         ans += query(L,R,s*2+1,(l+r)/2+1,r);         return ans;     } };  ``` "
   },
   {
+    "title": "add_file",
+    "url": "add_file.html",
+    "content": "# add_file  - [グラフ](https://github.com/kansu1120/library/tree/main/all/%E3%82%B0%E3%83%A9%E3%83%95) - [数学](https://github.com/kansu1120/library/tree/main/all/%E6%95%B0%E5%AD%A6) - [データ構造](https://github.com/kansu1120/library/tree/main/all/%E6%A7%8B%E9%80%A0%E4%BD%93) - [二分探索](https://github.com/kansu1120/library/tree/main/all/%E4%BA%8C%E5%88%86%E6%8E%A2%E7%B4%A2) - [その他典型](https://github.com/kansu1120/library/tree/main/all/%E3%81%9D%E3%81%AE%E4%BB%96%E5%85%B8%E5%9E%8B) - [累積和](https://github.com/kansu1120/library/tree/main/all/%E7%B4%AF%E7%A9%8D%E5%92%8C) "
+  },
+  {
     "title": "countmultiset",
     "url": "countmultiset.html",
     "content": "# countが高速に行えるmaltiset  使い方はmulsisetと同じ  countがlogNで実行できる  ```cpp template<typename T> class countable_multiset{     public :     multiset<T> ms;     map<T,int> cnt;     void insert(const T& n){         cnt[n]++;         ms.insert(n);     }     void all_erase(const T& n){         cnt.erase(n);         ms.erase(n);     }     void it_erase(const T& n){         auto it = ms.find(n);         if(it==ms.end())return;         cnt[n] = max(0,cnt[n]-1);         if(cnt[n]==0)cnt.erase(n);         ms.erase(it);     }     int count(const T& n){         if(cnt.count(n))return cnt[n];         return 0;     }     auto find(const T& n){         return ms.find(n);     } }; ``` "
