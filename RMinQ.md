@@ -33,16 +33,17 @@ public:
     long long find(long long l,long long r){
         if(l > r)return -1;
         long long x = query(l,r);
+        if(x==INF)return -1;
         return find(l,r,x,1,0,siz-1);
     }
     private : 
     long long query(long long L,long long R,long long s,long long l,long long r){
         long long ans = INF;
+        if(r < L || l > R)return INF;
         if(l >= L && r <= R){
             ans = min(ans,v[s]);
             return ans;
         }
-        if(r < L || l > R)return INF;
         ans = min(ans,query(L,R,s*2,l,(l+r)/2));
         ans = min(ans,query(L,R,s*2+1,(l+r)/2+1,r));
         return ans;
