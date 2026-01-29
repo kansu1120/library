@@ -18,7 +18,10 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build index
-        run: node ./build_index.js
+        run: |
+          pwd
+          ls -la
+          node "$GITHUB_WORKSPACE/build_index.js"
       - name: Commit index
         run: |
           git config user.name "github-actions"
