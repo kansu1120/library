@@ -2,6 +2,10 @@
   "name": "library-search-index-builder",
   "version": "1.0.0",
   "private": true,
+  "description": "Automated search index builder for library markdown documentation",
+  "scripts": {
+    "build": "node build_index.js"
+  },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "remove-markdown": "^0.3.0"

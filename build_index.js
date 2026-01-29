@@ -12,7 +12,7 @@ const EXCLUDED_DIRS = ["node_modules", ".git", ".github", "_layouts"];
 /**
  * Recursively find all markdown files in the given directory
  */
-function findMarkdownFiles(dir, baseDir = dir) {
+function findMarkdownFiles(dir) {
   let results = [];
   
   try {
@@ -27,7 +27,7 @@ function findMarkdownFiles(dir, baseDir = dir) {
       }
       
       if (entry.isDirectory()) {
-        results = results.concat(findMarkdownFiles(fullPath, baseDir));
+        results = results.concat(findMarkdownFiles(fullPath));
       } else if (entry.isFile() && entry.name.endsWith(".md")) {
         results.push(fullPath);
       }
@@ -43,8 +43,19 @@ function findMarkdownFiles(dir, baseDir = dir) {
  * Extract the first H1 heading from markdown content
  */
 function extractFirstH1(content) {
-  const match = content.match(/^#\s+(.+)$/m);
+  const match = content.match(/^\s*#\s+(.+)$/m);
   return match ? match[1].trim() : null;
+}
+
+/**
+ * Strip Jekyll/Liquid template syntax from content
+ */
+function stripLiquidSyntax(content) {
+  // Remove Liquid tags: {% ... %}, {{ ... }}
+  return content
+    .replace(/\{%[^%]*%\}/g, '')
+    .replace(/\{\{[^}]*\}\}/g, '')
+    .trim();
 }
 
 /**
@@ -63,9 +74,6 @@ function generateUrl(filePath) {
   // Handle index.md files - they should map to directory root
   if (relativePath.endsWith("/index")) {
     relativePath = relativePath.replace(/\/index$/, "/");
-  } else {
-    // For non-index files, just remove .md (no .html extension)
-    relativePath = relativePath;
   }
   
   // Ensure URL starts with /library/
@@ -129,8 +137,9 @@ function processFile(filePath) {
       url = generateUrl(filePath);
     }
     
-    // Process content: strip markdown, normalize whitespace, truncate
-    let processedContent = removeMd(content);
+    // Process content: strip Liquid syntax, strip markdown, normalize whitespace, truncate
+    let processedContent = stripLiquidSyntax(content);
+    processedContent = removeMd(processedContent);
     processedContent = processedContent
       .replace(/\s+/g, " ")  // Normalize whitespace
       .trim()
