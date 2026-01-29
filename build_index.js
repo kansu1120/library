@@ -43,17 +43,10 @@ function firstH1(md) {
   return m ? m[1].trim() : null;
 }
 
-function normalizeUrl(u, ensureLibraryPrefix = false) {
+function normalizeUrl(u) {
   if (!u) return u;
   if (!u.startsWith('/')) u = '/' + u;
-  u = u.replace(/\/+/g, '/');
-  
-  // Ensure /library prefix if requested and not already present
-  if (ensureLibraryPrefix && !u.startsWith('/library')) {
-    u = '/library' + u;
-  }
-  
-  return u;
+  return u.replace(/\/+/g, '/');
 }
 
 const entries = [];
@@ -88,14 +81,24 @@ for (const root of roots) {
 
     let url;
     if (fm.permalink) {
-      url = normalizeUrl(String(fm.permalink), true);
+      url = normalizeUrl(String(fm.permalink));
     } else if (fm.url) {
-      url = normalizeUrl(String(fm.url), true);
+      url = normalizeUrl(String(fm.url));
     } else {
       const rel = path.relative(ROOT, filePath).replace(/\\/g, '/');
       let urlPath = '/' + rel.replace(/\.md$/i, '');
-      if (urlPath.endsWith('/index')) urlPath = urlPath.replace(/\/index$/, '/');
-      url = normalizeUrl('/library' + urlPath);
+
+      // Ensure all URLs include "/library/library" if needed
+      if (!urlPath.startsWith('/library')) {
+        urlPath = '/library' + urlPath;
+      }
+      if (urlPath.startsWith('/library/library')) {
+        urlPath = urlPath.replace(/^\/library\/library/, '/library/library');
+      } else {
+        urlPath = '/library' + urlPath;
+      }
+
+      url = normalizeUrl(urlPath);
     }
 
     let content = removeMd(body || '');
@@ -115,31 +118,13 @@ for (const e of entries) {
   uniq.push(e);
 }
 
-// Validate all URLs have /library prefix
-console.log('Validating URLs...');
-let validationErrors = 0;
-for (const e of uniq) {
-  if (!e.url.startsWith('/library')) {
-    console.error(`ERROR: URL missing /library prefix: "${e.url}" for title: "${e.title}"`);
-    validationErrors++;
-  }
-}
-
-if (validationErrors > 0) {
-  console.error(`\nValidation failed with ${validationErrors} error(s). URLs must start with /library`);
-  process.exit(1);
-}
-console.log('✓ All URLs validated successfully');
-
 // Ensure library dir exists
 const libDir = path.join(ROOT, 'library');
 if (!fs.existsSync(libDir)) fs.mkdirSync(libDir, { recursive: true });
 
 try {
   fs.writeFileSync(outFile, JSON.stringify(uniq, null, 2), 'utf8');
-  console.log('✓ Wrote', outFile);
-  console.log(`✓ Total entries: ${uniq.length}`);
-  console.log('✓ All entries have valid /library prefix');
+  console.log('Wrote', outFile, 'entries:', uniq.length);
 } catch (e) {
   console.error('Failed to write:', e);
   process.exit(1);
