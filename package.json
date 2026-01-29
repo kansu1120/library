@@ -1,0 +1,17 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "https://kansu1120.github.io/library/",
+  "main": "build_index.js",
+  "scripts": {
+    "build": "node build_index.js",
+    "test": "node test_build_index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "remove-markdown": "^0.6.3"
+  }
+}
