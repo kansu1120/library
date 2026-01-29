@@ -7,7 +7,7 @@
   {
     "title": "その他典型",
     "url": "/library/all/その他典型/",
-    "content": "その他典型 便利なやつ {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains 'その他典型/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "その他典型 便利なやつ"
   },
   {
     "title": "循環配列での長さwの区間の和の最大値",
@@ -42,7 +42,7 @@
   {
     "title": "グラフアルゴリズム一覧",
     "url": "/library/all/グラフ/",
-    "content": "グラフアルゴリズム一覧 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains 'グラフ/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "グラフアルゴリズム一覧"
   },
   {
     "title": "グラフ法則",
@@ -87,7 +87,7 @@
   {
     "title": "無向グラフの最小全域木",
     "url": "/library/all/グラフ/最小全域木",
-    "content": "無向グラフの最小全域木 vector>> の状態のグラフを入れる 最小全域木のコストが返ってくる 非連結の場合は-1が返ってくる long long cost(vector>>& v){ long long n = v.size(); long long ans = 0; dsu d(n); priority_queue>,vector>>,greater>>> q; rep(i,n)for(pair p : v[i]){ if(p.first > i){ q.push({p.second,{i,p.first}}); } } while(q.size()!=0){ long long w = q.top().first; long long x = q.top().second.first; long long y = q.top().second.second; q.pop(); if(!d.same(x,y)){ ans += w; d.merge(x,y); } } if(d.size(0)!=n)return -1; return ans; } 最小全域木の内容が欲しい場合 vector> cost(vector>>& v){ long long n = v.size(); vector> ans; dsu d(n); priority_queue>,vector>>,greater>>> q; rep(i,n)for(pair p : v[i]){ if(p.first > i){ q.push({p.second,{i,p.first}}); } } while(q.size()!=0){ long long w = q.top().first; long long x = q.top().second.first; long long y = q.top().second.second; q.pop(); if(!d.same(x,y)){ d.merge(x,y); ans.push_back({x,y}); } } if(d.size(0)!=n)return {{-1,-1}}; return ans; }"
+    "content": "無向グラフの最小全域木 vector>> の状態のグラフを入れる 最小全域木のコストが返ってくる 非連結の場合は-1が返ってくる long long cost(vector>>& v){ long long n = v.size(); long long ans = 0; dsu d(n); priority_queue>,vector>>,greater>>> q; rep(i,n)for(pair p : v[i]){ if(p.first > i){ q.push({p.second,{i,p.first}}); } } while(q.size()!=0){ long long w = q.top().first; long long x = q.top().second.first; long long y = q.top().second.second; q.pop(); if(!d.same(x,y)){ ans += w; d.merge(x,y); } } if(d.size(0)!=n)return -1; return ans; } 最小全域木の内容が欲しい場合 vector> cost(vector>>& v){ long long n = v.size(); vector> ans; dsu d(n); priority_queue>,vector>>,greater>>> q; rep(i,n)for(pair p : v[i]){ if(p.first > i){ q.push({p.second,{i,p.first}}); } } while(q.size()!=0){ long long w = q.top().first; long long x = q.top().second.first; long long y = q.top().second.second; q.pop(); if(!d.same(x,y)){ d.merge(x,y); ans.push_back({x,y}); } } if(d.size(0)!=n)return ; return ans; }"
   },
   {
     "title": "木の直径を求める",
@@ -97,7 +97,7 @@
   {
     "title": "二分探索",
     "url": "/library/all/二分探索/",
-    "content": "二分探索 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains '二分探索/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "二分探索"
   },
   {
     "title": "二分探索",
@@ -142,7 +142,7 @@
   {
     "title": "数学",
     "url": "/library/all/数学/",
-    "content": "数学 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains '数学/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "数学"
   },
   {
     "title": "エラトステネスの篩",
@@ -212,7 +212,7 @@
   {
     "title": "構造体",
     "url": "/library/all/構造体/",
-    "content": "データ構造 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains '構造体/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "データ構造"
   },
   {
     "title": "order_statistic_tree",
@@ -257,7 +257,7 @@
   {
     "title": "累積和",
     "url": "/library/all/累積和/",
-    "content": "累積和 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains '累積和/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
+    "content": "累積和"
   },
   {
     "title": "二次元累積和",

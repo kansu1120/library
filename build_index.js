@@ -12,7 +12,7 @@ const roots = [path.join(ROOT, 'all'), path.join(ROOT, 'library')];
 const outFile = path.join(ROOT, 'library', 'search_index.json');
 
 // Config
-const MAX_CONTENT_CHARS = 4000;
+const MAX_CONTENT_CHARS = 4000; // Limit content size for search performance and index size
 const EXCLUDE_FILENAMES_STARTING_WITH = ['_'];
 const EXCLUDE_DIR_NAMES = ['.git', 'node_modules'];
 
@@ -72,6 +72,7 @@ for (const root of roots) {
       fm = parsed.data || {};
       body = parsed.content || '';
     } catch (e) {
+      console.warn('Front-matter parsing failed for:', filePath, e.message);
       // fallback to raw
     }
 
@@ -91,7 +92,12 @@ for (const root of roots) {
       url = normalizeUrl('/library' + urlPath);
     }
 
-    let content = removeMd(body || '');
+    let content = body || '';
+    // Remove Jekyll/Liquid template syntax first
+    content = content.replace(/\{%.*?%\}/gs, '');
+    content = content.replace(/\{\{.*?\}\}/gs, '');
+    // Then remove markdown
+    content = removeMd(content);
     content = content.replace(/\s+/g, ' ').trim();
     if (content.length > MAX_CONTENT_CHARS) content = content.slice(0, MAX_CONTENT_CHARS);
 
