@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Recursively find all markdown files in a directory
+ * ディレクトリ内の全てのマークダウンファイルを再帰的に検索
  */
 function findMarkdownFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -22,11 +22,11 @@ function findMarkdownFiles(dir, fileList = []) {
 }
 
 /**
- * Extract title from markdown content
- * Looks for frontmatter title first, then first heading
+ * マークダウンコンテンツからタイトルを抽出
+ * フロントマターのタイトル、最初の見出し、ファイル名の順で検索
  */
 function extractTitle(content, filename) {
-  // Check for frontmatter title
+  // フロントマターのタイトルをチェック
   const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
   if (frontmatterMatch) {
     const titleMatch = frontmatterMatch[1].match(/title:\s*(.+)/);
@@ -35,18 +35,18 @@ function extractTitle(content, filename) {
     }
   }
   
-  // Look for first heading
+  // 最初の見出しを検索
   const headingMatch = content.match(/^#\s+(.+)$/m);
   if (headingMatch) {
     return headingMatch[1].trim();
   }
   
-  // Fall back to filename without extension
+  // ファイル名（拡張子なし）にフォールバック
   return path.basename(filename, ".md");
 }
 
 /**
- * Generate relative URL from file path
+ * ファイルパスから相対URLを生成
  */
 function generateUrl(filePath, baseDir) {
   const relativePath = path.relative(baseDir, filePath);
@@ -54,48 +54,48 @@ function generateUrl(filePath, baseDir) {
 }
 
 /**
- * Clean and process content for search indexing
+ * 検索インデックス用にコンテンツをクリーンアップして処理
  */
 function cleanContent(content) {
-  // Remove frontmatter
+  // フロントマターを削除
   content = content.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
   
-  // Remove code blocks
+  // コードブロックを削除
   content = content.replace(/```[\s\S]*?```/g, " ");
   
-  // Remove inline code
+  // インラインコードを削除
   content = content.replace(/`[^`]+`/g, " ");
   
-  // Remove markdown links but keep text
+  // マークダウンリンクのテキストのみ保持
   content = content.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
   
-  // Remove images
+  // 画像を削除
   content = content.replace(/!\[([^\]]*)\]\([^)]+\)/g, "");
   
-  // Remove HTML tags
+  // HTMLタグを削除
   content = content.replace(/<[^>]+>/g, " ");
   
-  // Remove headings markers
+  // 見出しマーカーを削除
   content = content.replace(/^#{1,6}\s+/gm, "");
   
-  // Replace multiple whitespace with single space
+  // 複数の空白を単一のスペースに置換
   content = content.replace(/\s+/g, " ");
   
   return content.trim();
 }
 
-// Main execution
+// メイン処理
 const ALL_DIR = path.join(__dirname, "all");
 const OUTPUT_PATH = path.join(__dirname, "library", "search_index.json");
 
-console.log("Starting search index generation...");
-console.log(`Scanning directory: ${ALL_DIR}`);
+console.log("検索インデックスの生成を開始します...");
+console.log(`スキャン対象ディレクトリ: ${ALL_DIR}`);
 
-// Find all markdown files in the 'all' directory
+// 'all'ディレクトリ内の全マークダウンファイルを検索
 const markdownFiles = findMarkdownFiles(ALL_DIR);
-console.log(`Found ${markdownFiles.length} markdown files`);
+console.log(`${markdownFiles.length}個のマークダウンファイルを発見しました`);
 
-// Process each file
+// 各ファイルを処理
 const indexData = markdownFiles.map(filePath => {
   const content = fs.readFileSync(filePath, "utf8");
   const title = extractTitle(content, filePath);
@@ -109,17 +109,17 @@ const indexData = markdownFiles.map(filePath => {
   };
 });
 
-// Sort by title for consistency
+// タイトルでソート（一貫性のため）
 indexData.sort((a, b) => a.title.localeCompare(b.title));
 
-// Ensure output directory exists
+// 出力ディレクトリが存在することを確認
 const outputDir = path.dirname(OUTPUT_PATH);
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Write the index file
+// インデックスファイルを書き込み
 fs.writeFileSync(OUTPUT_PATH, JSON.stringify(indexData, null, 2));
 
-console.log(`Successfully generated ${OUTPUT_PATH}`);
-console.log(`Indexed ${indexData.length} files`);
+console.log(`${OUTPUT_PATH}を正常に生成しました`);
+console.log(`${indexData.length}個のファイルをインデックス化しました`);
