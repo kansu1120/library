@@ -210,6 +210,11 @@
     "content": "区間和のセグ木 segmenttree 名前(サイズ) で定義 名前.update( i , x ) で i 番目の要素を x に変更 名前.query( l , r ) で l から r の範囲内の合計値を取得 class segmenttree{ public: long long siz = 1; vector v; segmenttree (long long n){ siz = 1; while(siz 1){ i /= 2; v[i] = v[i2]+v[i2+1]; } } long long query(int l,int r){ return query(l,r,1,0,siz-1); } private : long long query(int L,int R,int s,int l,int r){ long long ans = 0; if(l >= L && r R)return 0; ans += query(L,R,s*2,l,(l+r)/2); ans += query(L,R,s*2+1,(l+r)/2+1,r); return ans; } };"
   },
   {
+    "title": "区間和のセグ木",
+    "url": "/library/all/構造体/RSumQ",
+    "content": "区間和のセグ木 segmenttreeで定義 update(i,x)iをxにする query(l,r) l~rの合計を出す class segmenttree{ public: long long INF = 1e18; long long siz = 1; vector v; segmenttree (long long n){ siz = 1; while(siz 1){ i /= 2; v[i] = v[i2]+v[i2+1]; } } long long query(int l,int r){ return query(l,r,1,0,siz-1); } private : long long query(int L,int R,int s,int l,int r){ long long ans = 0; if(r R)return 0; if(l >= L && r <= R){ return v[s]; } ans += query(L,R,s*2,l,(l+r)/2); ans += query(L,R,s*2+1,(l+r)/2+1,r); return ans; } };"
+  },
+  {
     "title": "countが高速に行えるmaltiset",
     "url": "/library/all/構造体/countmultiset",
     "content": "countが高速に行えるmaltiset 使い方はmulsisetと同じ countがlogNで実行できる template class countable_multiset{ public : multiset ms; map cnt; void insert(const T& n){ cnt[n]++; ms.insert(n); } void all_erase(const T& n){ cnt.erase(n); ms.erase(n); } void it_erase(const T& n){ auto it = ms.find(n); if(it==ms.end())return; cnt[n] = max(0,cnt[n]-1); if(cnt[n]==0)cnt.erase(n); ms.erase(it); } int count(const T& n){ if(cnt.count(n))return cnt[n]; return 0; } auto find(const T& n){ return ms.find(n); } };"
