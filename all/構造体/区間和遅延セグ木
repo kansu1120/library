@@ -1,0 +1,75 @@
+# 区間和遅延セグ木
+
+segmenttreeで定義
+
+range_addとrange_set
+
+queryが使えます
+
+
+```cpp
+
+class segmenttree{
+public:
+    long long INF = 1e18;
+    long long siz = 1;
+    vector<long long> v;
+    vector<long long> a,b;
+    segmenttree (long long n){
+        siz = 1;
+        while(siz < n)siz *= 2;
+        v.assign(2*siz,0);
+        a.assign(2*siz,1);
+        b.assign(2*siz,0);
+    }
+    long long query(long long l,long long r){
+        if(l > r)return 0;
+        return query(l,r,1,0,siz-1);
+    }
+    void range_add(long long l,long long r,long long x){
+        range_apply(l,r,1,0,siz-1,1,x);
+    }
+    void range_set(long long l,long long r,long long x){
+        range_apply(l,r,1,0,siz-1,0,x);
+    }
+    void apply(long long s,long long l,long long r,long long A,long long B){
+        v[s] = A * v[s] + B * (r-l+1);
+        a[s] = a[s] * A;
+        b[s] = b[s] * A + B;
+    }
+    void push(long long s,long long l,long long r){
+        if(a[s]==1 && b[s] == 0)return;
+        if(l==r)return;
+        apply(s*2,l,(l+r)/2,a[s],b[s]);
+        apply(s*2+1,(l+r)/2+1,r,a[s],b[s]);
+        a[s] = 1;
+        b[s] = 0;
+    }
+    void pull(long long s){
+        v[s] = v[s*2]+v[s*2+1];
+    }
+
+    void range_apply(long long L,long long R,long long s,long long l,long long r,long long A,long long B){
+        if(r < L || l > R)return;
+        if(L <= l && r <= R){
+            apply(s,l,r,A,B);
+            return;
+        }
+        push(s,l,r);
+        range_apply(L,R,s*2,l,(l+r)/2,A,B);
+        range_apply(L,R,s*2+1,(l+r)/2+1,r,A,B);
+        pull(s);
+    }
+
+    long long query(long long L,long long R,long long s,long long l,long long r){
+        if(r < L || l > R)return 0;
+        if(l >= L && r <= R){
+            return v[s];
+        }
+        push(s,l,r);
+        long long ans = query(L,R,s*2,l,(l+r)/2) + query(L,R,s*2+1,(l+r)/2+1,r);
+        return ans;
+    }
+};
+
+```
