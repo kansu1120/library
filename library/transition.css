@@ -14,5 +14,6 @@
 }
 
 .transition-overlay.active {
-  transform: translate(-50%, -50%) scale(50);
+  /* Scale(100) provides sufficient coverage for most viewport sizes including 4K displays */
+  transform: translate(-50%, -50%) scale(100);
 }

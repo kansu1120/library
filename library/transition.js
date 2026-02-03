@@ -2,6 +2,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.querySelector('.transition-overlay');
   
+  // Exit early if overlay element doesn't exist
+  if (!overlay) return;
+  
+  // Transition duration in milliseconds (must match CSS transition time)
+  const TRANSITION_DURATION = 800;
+  
   // Add transition-link class to all navigation links
   document.querySelectorAll('a').forEach(link => {
     // Skip external links and anchors
@@ -20,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         window.location.href = link.href;
-      }, 800);
+      }, TRANSITION_DURATION);
     });
   });
 });
