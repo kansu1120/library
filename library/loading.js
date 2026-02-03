@@ -1,14 +1,14 @@
 // Loading Overlay Feature
 // Shows a full-screen loading overlay when navigation links are clicked
 
+// Duration to show loading overlay (in milliseconds)
+const LOADING_DISPLAY_DURATION = 1500;
+
 document.addEventListener("DOMContentLoaded", () => {
   const loadingOverlay = document.getElementById('loadingOverlay');
   
   // Exit early if overlay element doesn't exist
   if (!loadingOverlay) return;
-  
-  // Duration to show loading overlay (in milliseconds)
-  const LOADING_DISPLAY_DURATION = 1500;
   
   // Get all navigation links that should trigger the loading overlay
   const navigationLinks = document.querySelectorAll('a:not([target="_blank"])');
