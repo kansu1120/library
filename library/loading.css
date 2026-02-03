@@ -19,7 +19,6 @@
 /* Hidden state - ensures overlay is not displayed */
 .loading-overlay.hidden {
   display: none !important;
-  opacity: 0;
 }
 
 /* Active state - shown when loading */
