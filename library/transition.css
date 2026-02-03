@@ -1,0 +1,18 @@
+/* Page Transition Overlay */
+.transition-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #ff9f68;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.8s ease-in-out;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.transition-overlay.active {
+  transform: translate(-50%, -50%) scale(50);
+}
