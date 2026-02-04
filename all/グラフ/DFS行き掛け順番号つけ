@@ -1,0 +1,22 @@
+# DFS行き掛け順番号つけ
+
+vector<vector<int>> vを作っておいてそこにグラフを記録しておく必要がある
+
+strの値を変えることで好きな位置からスタートできる
+
+```cpp
+    vector<int> x(n,-1);
+    int str = 0;
+    int cnt = 0;
+    x[str] = 0;
+    function<void(int)> f = [&](int pos){
+        for(int i : v[pos]){
+            if(x[i]==-1){
+                cnt++;
+                x[i] = cnt;
+                f(i);
+            }
+        }
+    };
+    f(str);
+```
