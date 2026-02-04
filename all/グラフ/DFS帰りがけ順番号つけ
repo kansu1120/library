@@ -1,17 +1,22 @@
 # DFS帰りがけ順番号つけ
 
+## 木専用
+
 vector<vector<int>> vでグラフを保存しておく
 
 str を変えることでスタート地点を変えられる
 
 ```cpp
     vector<int> x(n,-1);
+    vector<bool> visited(n,false);
     int cnt = 0;
     int str = 0;
     x[str] = 0;
+    visited[str] = true;
     function<void(int)> f = [&](int pos){
         for(int i : v[pos]){
-            if(x[i]==-1){
+            if(!visited[i]){
+                visited[i] = true;
                 f(i);
             }
         }
@@ -20,3 +25,6 @@ str を変えることでスタート地点を変えられる
     };
 
 ```
+
+##一般グラフでも使えるやつ
+
