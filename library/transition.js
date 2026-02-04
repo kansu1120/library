@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.transition-link').forEach(link => {
     link.addEventListener('click', (event) => {
       event.preventDefault();
-      overlay.classList.add('active');
+      // overlay.classList.add('active'); // Commented out to disable background overlay effect
 
       setTimeout(() => {
         window.location.href = link.href;
