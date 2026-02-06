@@ -1,10 +1,26 @@
 # manacher
 
-ちょい不十分
+**使い方**
 
+"abcba"をこれに入れると"a%b%c%b%a"というダミー文字を間に挟んだ状態のものとして考えられる
+
+それぞれの地点を中心とした回文の最大半径の大きさをO(N)で計算する
+
+a | b | c | b | a
+
+文字と文字の間も含めてそれぞれの場所を中心とした回文の最大の半径が計算できる
+
+    
 ```cpp
 vector<int> mana(string s){
     int n = s.size();
+    string t = "%";
+    rep(i,n){
+        t += s[i];
+        t += "%";
+    }
+    n = t.size();
+    swap(s,t);
     vector<int> res(n,0);
     int y = -1;
     int x = -1;
