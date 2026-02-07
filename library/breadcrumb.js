@@ -59,6 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // ホームページまたはセグメントが少ない場合は非表示
   if (breadcrumb.children.length <= 1) {
-    breadcrumb.style.display = 'none';
+    breadcrumb.classList.add('hidden');
   }
 });

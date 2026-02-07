@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // h3の場合はインデント
     if (heading.tagName === 'H3') {
-      li.style.paddingLeft = '16px';
+      li.classList.add('toc-h3');
     }
     
     li.appendChild(link);
@@ -49,18 +49,4 @@ document.addEventListener('DOMContentLoaded', () => {
       main.insertBefore(toc, main.firstChild);
     }
   }
-  
-  // 目次内のリンクをクリックしたときのスムーススクロール
-  toc.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = link.getAttribute('href').substring(1);
-      const target = document.getElementById(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // URLを更新
-        history.pushState(null, null, `#${targetId}`);
-      }
-    });
-  });
 });
