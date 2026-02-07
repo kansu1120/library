@@ -150,7 +150,7 @@ h3 {
     0 8px 24px rgba(0, 0, 0, 0.12);
   transform: scale(1.02);
   outline: none;
-  background: #fff;
+  background: var(--header-bg);
 }
 
 /* ===== Search Results Dropdown ===== */
@@ -581,7 +581,6 @@ function toggleHeaderSearch(){
 }
 
 // スクロール時のヘッダー変化
-let lastScroll = 0;
 window.addEventListener('scroll', () => {
   const header = document.querySelector('.header');
   const currentScroll = window.pageYOffset;
@@ -591,8 +590,6 @@ window.addEventListener('scroll', () => {
   } else {
     header.style.boxShadow = '0 2px 20px rgba(122, 15, 24, 0.08)';
   }
-  
-  lastScroll = currentScroll;
 });
 </script>
 
