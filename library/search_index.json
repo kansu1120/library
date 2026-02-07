@@ -7,7 +7,7 @@
   {
     "title": "zアルゴリズム",
     "url": "/library/all/その他典型/Z",
-    "content": "zアルゴリズム 文字列Sのそれぞれの位置についてそこから後ろの文字列とSとの最長共通接頭辞の長さをO(N)で計算できる Z(S)でvector のリターン vector z(string s){ int n = s.size(); vector ans(n); int l=0,r=0; ans[0] = n; for(int i = 1;i r){ int J = 0; int j = i; while(j < n && J < n && s[J] == s[j]){ J++; j++; } ans[i] = J; r = j-1; l = i; } else{ int j = min(i+ans[i-l],r); int J = j-i; while(j < n && J < n && s[J] == s[j]){ J++; j++; } ans[i] = J; if(r < j-1){ r = j-1; l = i; } } } return ans; }"
+    "content": "zアルゴリズム 文字列Sのそれぞれの位置についてそこから後ろの文字列とSとの最長共通接頭辞の長さをO(N)で計算できる Z(S)でvector のリターン 単体比較 vector z(string s){ int n = s.size(); vector ans(n); int l=0,r=0; ans[0] = n; for(int i = 1;i r){ int J = 0; int j = i; while(j z(string s,string t){ // tのそれぞれについて計算される int S = s.size(); s = s +\"#\"+t; int n = s.size(); vector ans(n); int l=0,r=0; ans[0] = n; for(int i = 1;i r){ int J = 0; int j = i; while(j res; for(int i = S+1;i < ans.size();i++){ res.push_back(ans[i]); } return res; }"
   },
   {
     "title": "その他典型",
