@@ -4,14 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
                      window.location.pathname === '/library/' ||
                      window.location.pathname === '/library/index.html';
   
-  if (!isHomePage) return; // ホームページ以外は何もしない
-  
   const logoMain = document.querySelector('.logo-main');
   const logoSub = document.querySelector('.logo-sub');
   const headerLogo = document.querySelector('.header-logo');
   
-  if (logoMain && logoSub && headerLogo) {
-    // 初期状態で非表示に設定
+  if (!logoMain || !logoSub || !headerLogo) return;
+  
+  if (isHomePage) {
+    // ホームページの場合：初期状態で非表示＆アニメーション
     logoMain.style.opacity = '0';
     logoSub.style.opacity = '0';
     
@@ -20,5 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
       logoMain.classList.add('logo-animate');
       logoSub.classList.add('logo-animate');
     }, 700);
+  } else {
+    // ホームページ以外：普通に表示（アニメーションなし）
+    logoMain.style.opacity = '1';
+    logoSub.style.opacity = '1';
   }
 });
