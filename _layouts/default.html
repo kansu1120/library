@@ -16,6 +16,10 @@
   --bg:#fbfbfb; --text:#1e1e1e; --sub:#666;
   --line:#e5e5e5; --accent:#7a0f18; --gold:#c9a24d;
   --header-bg:#e0e0e0;
+  --glow-primary: rgba(201, 162, 77, 0.8);
+  --glow-secondary: rgba(201, 162, 77, 0.5);
+  --glow-size-sm: 15px;
+  --glow-size-md: 30px;
 }
 
 body{
@@ -466,8 +470,8 @@ footer{
   }
   60% {
     text-shadow: 
-      0 0 15px rgba(201, 162, 77, 0.8),
-      0 0 30px rgba(201, 162, 77, 0.5);
+      0 0 var(--glow-size-sm) var(--glow-primary),
+      0 0 var(--glow-size-md) var(--glow-secondary);
   }
   100% {
     transform: translateX(0);
@@ -488,8 +492,8 @@ footer{
   }
   60% {
     text-shadow: 
-      0 0 15px rgba(201, 162, 77, 0.8),
-      0 0 30px rgba(201, 162, 77, 0.5);
+      0 0 var(--glow-size-sm) var(--glow-primary),
+      0 0 var(--glow-size-md) var(--glow-secondary);
   }
   100% {
     transform: translateX(0);
@@ -602,6 +606,10 @@ pre:hover .copy-button {
     --accent: #ff4158;
     --gold: #e5c167;
     --header-bg: #222;
+    --glow-primary: rgba(229, 193, 103, 0.9);
+    --glow-secondary: rgba(229, 193, 103, 0.6);
+    --glow-size-sm: 20px;
+    --glow-size-md: 40px;
   }
   
   body {
@@ -703,45 +711,6 @@ pre:hover .copy-button {
   
   .breadcrumb .current {
     color: var(--text);
-  }
-  
-  /* ロゴアニメーション - ダークモード */
-  .logo-divider {
-    color: var(--gold);
-  }
-  
-  @keyframes slideFromCenterLeft {
-    0% {
-      transform: translateX(80px);
-      opacity: 0;
-    }
-    60% {
-      text-shadow: 
-        0 0 20px rgba(229, 193, 103, 0.9),
-        0 0 40px rgba(229, 193, 103, 0.6);
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-      text-shadow: 0 0 0 transparent;
-    }
-  }
-  
-  @keyframes slideFromCenterRight {
-    0% {
-      transform: translateX(-80px);
-      opacity: 0;
-    }
-    60% {
-      text-shadow: 
-        0 0 20px rgba(229, 193, 103, 0.9),
-        0 0 40px rgba(229, 193, 103, 0.6);
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-      text-shadow: 0 0 0 transparent;
-    }
   }
 }
 
