@@ -150,6 +150,11 @@
     "content": "答えで二分探索 boolを返すtestという関数にmidを入れれば使える状態にしておく必要がある 答えの最小化 true true true false false このtrueとなる時の値を返す int bs_min(){ long long l = 0; long long r = 1e18; while (r - l > 1) { long long mid = (l + r) / 2; if (test(mid)) { r = mid; } else { l = mid; } } return r; }"
   },
   {
+    "title": "N以下の約数の個数の総和を求める",
+    "url": "/library/all/数学/N以下の約数の個数の総和",
+    "content": "N以下の約数の個数の総和を求める cnt(N,mod) N以下の約数の個数の総和 答えがデカくなることがあるのでmodであまりをとった結果が返ってくる 計算量O(√N) long long cnt(long long n,long long mod){ long long ans = 0; long long y = n; long long hidari = 0; while(y!=0){ long long migi = n/y; ans += ((migi - hidari)%mod)*(y%mod); ans %= mod; y = n/(migi+1); hidari = migi; } return ans; }"
+  },
+  {
     "title": "N進数変換",
     "url": "/library/all/数学/N進数変換",
     "content": "N進数変換 10進数の時はintを使い他のときはstringを使っている 10 -> N f(n,N) で任意の10進数n をN進数に変換できる string f(int n,int N){ string ans = \"\"; while (n) { ans.push_back('0' + n % N); n /= N; } reverse(ans.begin(),ans.end()); return ans; } N -> 10 f(s,n) で任意のn進数(n y // 先頭の 0 を削除 void trim(vector& a){ while(a.size() > 1 && a[0] == 0) a.erase(a.begin()); } // a（x進数）を y で割る // 商を a に格納し、余りを返す int div_mod(vector& a, int x, int y){ vector q; int cur = 0; for(int d : a){ cur = cur * x + d; q.push_back(cur / y); cur %= y; } a = q; trim(a); return cur; } // x進数(string) → y進数(string) string f(string s, int x, int y){ vector a; for(char c : s) a.push_back(c - '0'); trim(a); if(a.size() == 1 && a[0] == 0) return \"0\"; string res; while(!(a.size() == 1 && a[0] == 0)){ int r = div_mod(a, x, y); res.push_back(char('0' + r)); } reverse(res.begin(), res.end()); return res; }"
