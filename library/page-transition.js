@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // ホバー時にプリフェッチ（先読み）
+  // プリフェッチ要素はページ遷移時に自動的にクリーンアップされる
   document.querySelectorAll('a').forEach(link => {
     if (shouldExcludeLink(link)) {
       return;
@@ -105,6 +106,7 @@ function createRippleTransition(x, y, url) {
   });
   
   // アニメーション完了後にページ遷移
+  // オーバーレイはページ遷移時に自動的にクリーンアップされる
   setTimeout(() => {
     window.location.href = url;
   }, TRANSITION_DURATION);
