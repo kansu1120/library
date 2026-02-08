@@ -11,17 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerLogo = document.querySelector('.header-logo');
   
   if (logoMain && logoSub && headerLogo) {
-    // 中央に区切り線を追加
-    const divider = document.createElement('span');
-    divider.className = 'logo-divider';
-    divider.textContent = '|';
-    headerLogo.insertBefore(divider, logoSub);
+    // 初期状態で非表示に設定
+    logoMain.style.opacity = '0';
+    logoSub.style.opacity = '0';
     
     // リップルエフェクト終了後に開始（0.7秒遅延）
     setTimeout(() => {
       logoMain.classList.add('logo-animate');
       logoSub.classList.add('logo-animate');
-      divider.classList.add('logo-animate');
     }, 700);
   }
 });

@@ -20,6 +20,12 @@
   --glow-secondary: rgba(201, 162, 77, 0.5);
   --glow-size-sm: 15px;
   --glow-size-md: 30px;
+  --logo-glow-sm: 25px;
+  --logo-glow-md: 50px;
+  --logo-glow-lg: 75px;
+  --logo-glow-color: rgba(201, 162, 77, 1);
+  --logo-glow-color-alpha-8: rgba(201, 162, 77, 0.8);
+  --logo-glow-color-alpha-5: rgba(201, 162, 77, 0.5);
 }
 
 body{
@@ -425,80 +431,98 @@ footer{
 
 /* ================= Logo Animation ================= */
 
-/* ロゴアニメーション */
+/* ロゴアニメーション - ダイナミック版 */
 .logo-main, .logo-sub {
   display: inline-block;
 }
 
-/* 中央の区切り線 */
-.logo-divider {
-  display: inline-block;
-  color: var(--gold);
-  margin: 0 10px;
+/* ホームページでのロゴの初期状態（非表示） */
+.logo-main {
   opacity: 0;
-  transform: scaleY(0);
-  font-weight: 300;
 }
 
-.logo-divider.logo-animate {
-  animation: dividerAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+.logo-sub {
+  opacity: 0;
+  margin-left: 2px; /* 隙間をほぼゼロに */
 }
 
-@keyframes dividerAppear {
-  0% {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(201, 162, 77, 0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
-/* 左側（Kansu）のアニメーション */
+/* 左側（Kansu）のダイナミックアニメーション */
 .logo-main.logo-animate {
-  animation: slideFromCenterLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideFromCenterLeftDynamic 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-@keyframes slideFromCenterLeft {
+@keyframes slideFromCenterLeftDynamic {
   0% {
-    transform: translateX(80px);
+    transform: translateX(150px) scale(0.3) rotate(45deg);
     opacity: 0;
   }
-  60% {
+  40% {
     text-shadow: 
-      0 0 var(--glow-size-sm) var(--glow-primary),
-      0 0 var(--glow-size-md) var(--glow-secondary);
+      0 0 var(--logo-glow-sm) var(--logo-glow-color),
+      0 0 var(--logo-glow-md) var(--logo-glow-color-alpha-8),
+      0 0 var(--logo-glow-lg) var(--logo-glow-color-alpha-5);
+  }
+  70% {
+    transform: translateX(-10px) scale(1.15) rotate(-5deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(5px) scale(0.95) rotate(2deg);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(0) scale(1) rotate(0deg);
     opacity: 1;
     text-shadow: 0 0 0 transparent;
   }
 }
 
-/* 右側（C++ Library）のアニメーション */
+/* 右側（C++ Library）のダイナミックアニメーション */
 .logo-sub.logo-animate {
-  animation: slideFromCenterRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideFromCenterRightDynamic 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-@keyframes slideFromCenterRight {
+@keyframes slideFromCenterRightDynamic {
   0% {
-    transform: translateX(-80px);
+    transform: translateX(-150px) scale(0.3) rotate(-45deg);
     opacity: 0;
   }
-  60% {
+  40% {
     text-shadow: 
-      0 0 var(--glow-size-sm) var(--glow-primary),
-      0 0 var(--glow-size-md) var(--glow-secondary);
+      0 0 var(--logo-glow-sm) var(--logo-glow-color),
+      0 0 var(--logo-glow-md) var(--logo-glow-color-alpha-8),
+      0 0 var(--logo-glow-lg) var(--logo-glow-color-alpha-5);
+  }
+  70% {
+    transform: translateX(10px) scale(1.15) rotate(5deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translateX(-5px) scale(0.95) rotate(-2deg);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(0) scale(1) rotate(0deg);
     opacity: 1;
     text-shadow: 0 0 0 transparent;
+  }
+}
+
+/* ヘッダー全体の軽微な揺れエフェクト */
+.header-logo:has(.logo-animate) {
+  animation: headerShake 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes headerShake {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(2px);
+  }
+  80% {
+    transform: translateY(-1px);
   }
 }
 
@@ -610,6 +634,12 @@ pre:hover .copy-button {
     --glow-secondary: rgba(229, 193, 103, 0.6);
     --glow-size-sm: 20px;
     --glow-size-md: 40px;
+    --logo-glow-sm: 30px;
+    --logo-glow-md: 60px;
+    --logo-glow-lg: 90px;
+    --logo-glow-color: rgba(229, 193, 103, 1);
+    --logo-glow-color-alpha-8: rgba(229, 193, 103, 0.8);
+    --logo-glow-color-alpha-5: rgba(229, 193, 103, 0.5);
   }
   
   body {
