@@ -20,6 +20,12 @@
   --glow-secondary: rgba(201, 162, 77, 0.5);
   --glow-size-sm: 15px;
   --glow-size-md: 30px;
+  --logo-glow-sm: 25px;
+  --logo-glow-md: 50px;
+  --logo-glow-lg: 75px;
+  --logo-glow-color: rgba(201, 162, 77, 1);
+  --logo-glow-color-alpha-8: rgba(201, 162, 77, 0.8);
+  --logo-glow-color-alpha-5: rgba(201, 162, 77, 0.5);
 }
 
 body{
@@ -452,9 +458,9 @@ footer{
   }
   40% {
     text-shadow: 
-      0 0 25px rgba(201, 162, 77, 1),
-      0 0 50px rgba(201, 162, 77, 0.8),
-      0 0 75px rgba(201, 162, 77, 0.5);
+      0 0 var(--logo-glow-sm) var(--logo-glow-color),
+      0 0 var(--logo-glow-md) var(--logo-glow-color-alpha-8),
+      0 0 var(--logo-glow-lg) var(--logo-glow-color-alpha-5);
   }
   70% {
     transform: translateX(-10px) scale(1.15) rotate(-5deg);
@@ -482,9 +488,9 @@ footer{
   }
   40% {
     text-shadow: 
-      0 0 25px rgba(201, 162, 77, 1),
-      0 0 50px rgba(201, 162, 77, 0.8),
-      0 0 75px rgba(201, 162, 77, 0.5);
+      0 0 var(--logo-glow-sm) var(--logo-glow-color),
+      0 0 var(--logo-glow-md) var(--logo-glow-color-alpha-8),
+      0 0 var(--logo-glow-lg) var(--logo-glow-color-alpha-5);
   }
   70% {
     transform: translateX(10px) scale(1.15) rotate(5deg);
@@ -628,6 +634,12 @@ pre:hover .copy-button {
     --glow-secondary: rgba(229, 193, 103, 0.6);
     --glow-size-sm: 20px;
     --glow-size-md: 40px;
+    --logo-glow-sm: 30px;
+    --logo-glow-md: 60px;
+    --logo-glow-lg: 90px;
+    --logo-glow-color: rgba(229, 193, 103, 1);
+    --logo-glow-color-alpha-8: rgba(229, 193, 103, 0.8);
+    --logo-glow-color-alpha-5: rgba(229, 193, 103, 0.5);
   }
   
   body {
@@ -729,57 +741,6 @@ pre:hover .copy-button {
   
   .breadcrumb .current {
     color: var(--text);
-  }
-  
-  /* ダークモード対応 - ダイナミックロゴアニメーション */
-  @keyframes slideFromCenterLeftDynamic {
-    0% {
-      transform: translateX(150px) scale(0.3) rotate(45deg);
-      opacity: 0;
-    }
-    40% {
-      text-shadow: 
-        0 0 30px rgba(229, 193, 103, 1),
-        0 0 60px rgba(229, 193, 103, 0.8),
-        0 0 90px rgba(229, 193, 103, 0.5);
-    }
-    70% {
-      transform: translateX(-10px) scale(1.15) rotate(-5deg);
-      opacity: 1;
-    }
-    85% {
-      transform: translateX(5px) scale(0.95) rotate(2deg);
-    }
-    100% {
-      transform: translateX(0) scale(1) rotate(0deg);
-      opacity: 1;
-      text-shadow: 0 0 0 transparent;
-    }
-  }
-  
-  @keyframes slideFromCenterRightDynamic {
-    0% {
-      transform: translateX(-150px) scale(0.3) rotate(-45deg);
-      opacity: 0;
-    }
-    40% {
-      text-shadow: 
-        0 0 30px rgba(229, 193, 103, 1),
-        0 0 60px rgba(229, 193, 103, 0.8),
-        0 0 90px rgba(229, 193, 103, 0.5);
-    }
-    70% {
-      transform: translateX(10px) scale(1.15) rotate(5deg);
-      opacity: 1;
-    }
-    85% {
-      transform: translateX(-5px) scale(0.95) rotate(-2deg);
-    }
-    100% {
-      transform: translateX(0) scale(1) rotate(0deg);
-      opacity: 1;
-      text-shadow: 0 0 0 transparent;
-    }
   }
 }
 
