@@ -165,6 +165,11 @@
     "content": "数学 {% assign md_pages = site.pages | where_exp: \"p\", \"p.path contains '数学/'\" | where_exp: \"p\", \"p.name != 'index.md'\" | sort: \"path\" %} {% for p in md_pages %} {{ p.title | default: p.name | replace: \".md\", \"\" }} {% endfor %}"
   },
   {
+    "title": "nCrを計算する",
+    "url": "/library/all/数学/nCr",
+    "content": "nCrを計算する rを固定してnをr+xにしたときのそれぞれのxに対するnCrを計算しておく xrCr(xの最大値,rの値) でACLのmodntで答えが返ってくる 計算量はO(N) vector xrCr(int x_max,int r){ vector res(x_max+1); res[0] = 1; for(int i = 1;i <= x_max;i++){ res[i] = res[i-1] * (r+i) / (i); } return res; }"
+  },
+  {
     "title": "エラトステネスの篩",
     "url": "/library/all/数学/エラトステネスの篩",
     "content": "エラトステネスの篩 p(n) = vectorの中にp以下の素数を列挙してリターンする 計算量 NloglogN vector p(int n) { vector ok(n+1,1); ok[0] = ok[1] = 0; for(int i = 2;i*i ans; rep(i,n+1){ if(ok[i]){ ans.push_back(i); } } return ans; }"
