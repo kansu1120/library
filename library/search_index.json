@@ -197,7 +197,7 @@
   {
     "title": "区間篩",
     "url": "/library/all/数学/区間篩",
-    "content": "区間篩 e(L,R)でLからRまでを全て素因数分解する 計算量はNloglogNとかになるらしい vector>> e(long long l,long long r){ vector b(sqrtl(r)+3,true); vector so; for(long long i = 2;i v; for(long long i = l;i >> ans(v.size()); for(long long i : so){ for(long long j = max(i,((l+i-1ll)/i))*i;j <= r;j+=i){ int J = j-l; long long cnt = 0; while(v[J]%i==0){ v[J]/=i; cnt++; } if(cnt!=0)ans[J].push_back({i,cnt}); } } for(long long i = 0;i < v.size();i++){ if(v[i]!=1)ans[i].push_back({v[i],1}); } return ans; }"
+    "content": "区間篩 e(L,R)でLからRまでを全て素因数分解する 計算量はNloglogNとかになるらしい vector>> e(long long l,long long r){ vector b(sqrtl(r)+3,true); vector so; for(long long i = 2;i v; for(long long i = l;i >> ans(v.size()); for(long long i : so){ for(long long j = max(i,((l+i-1ll)/i))*i;j e(long long l,long long r){ vector b(sqrtl(r)+3,true); vector so; for(long long i = 2;i v; for(long long i = l;i ans(v.size()); for(long long i : so){ for(long long j = max(i,((l+i-1ll)/i))*i;j <= r;j+=i){ int J = j-l; long long cnt = 0; while(v[J]%i==0){ v[J]/=i; cnt++; } if(cnt!=0)ans[J]++; } } for(long long i = 0;i < v.size();i++){ if(v[i]!=1)ans[i]++; } return ans; }"
   },
   {
     "title": "座標圧縮",
