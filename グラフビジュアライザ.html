@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>グラフビジュアライザ</title>
+  <style>
+    :root {
+      --ink: #101915;
+      --muted: #5b6f67;
+      --accent: #0c8f83;
+      --accent-strong: #0b6d64;
+      --accent-warm: #f08a4b;
+      --paper: #f7f4ec;
+      --panel: rgba(255, 255, 255, 0.75);
+      --border: rgba(16, 25, 21, 0.15);
+      --shadow: 0 20px 50px rgba(16, 25, 21, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1400px 600px at 10% -10%, rgba(240, 138, 75, 0.25), transparent 60%),
+        radial-gradient(1000px 500px at 90% 0%, rgba(12, 143, 131, 0.2), transparent 55%),
+        linear-gradient(120deg, #fefaf4 0%, #e9f5f3 45%, #f7efe6 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16, 25, 21, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 25, 21, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-orb {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .orb-a {
+      background: #ffd7b8;
+      top: -120px;
+      left: -80px;
+    }
+
+    .orb-b {
+      background: #b7f0e8;
+      bottom: -140px;
+      right: -100px;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 48px auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .hero {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 18px 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      animation: lift 0.8s ease;
+    }
+
+    @keyframes lift {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .stats {
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      background: rgba(12, 143, 131, 0.1);
+      border: 1px solid rgba(12, 143, 131, 0.35);
+      padding: 10px 16px;
+      border-radius: 999px;
+      color: var(--accent-strong);
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .input-panel textarea {
+      width: 100%;
+      min-height: 200px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 14px;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      font-size: 0.9rem;
+      color: var(--ink);
+      resize: vertical;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+    }
+
+    .option-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    .option-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+    }
+
+    .option select,
+    .option input[type="number"] {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      background: #fff;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+    }
+
+    .check input {
+      accent-color: var(--accent);
+    }
+
+    .range-value {
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      color: var(--accent-strong);
+    }
+
+
+    button {
+      border: none;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 18px;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 20px rgba(12, 143, 131, 0.25);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 24px rgba(12, 143, 131, 0.3);
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--accent-strong);
+      border: 1px solid rgba(12, 143, 131, 0.4);
+      box-shadow: none;
+    }
+
+    .examples {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .format-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .format-panel {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(16, 25, 21, 0.18);
+      background: rgba(255, 255, 255, 0.65);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .format-panel .option-group {
+      margin-top: 0;
+    }
+
+    .chip {
+      background: rgba(240, 138, 75, 0.12);
+      color: #b2541d;
+      border: 1px solid rgba(240, 138, 75, 0.35);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      box-shadow: none;
+    }
+
+    .format-chip {
+      background: rgba(12, 143, 131, 0.12);
+      color: var(--accent-strong);
+      border: 1px solid rgba(12, 143, 131, 0.35);
+    }
+
+    .format-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 12px 22px rgba(12, 143, 131, 0.25);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .error {
+      margin-top: 14px;
+      color: #b92d2d;
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      font-size: 0.82rem;
+      min-height: 1.2em;
+    }
+
+    .viz-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #viz {
+      width: 100%;
+      flex: 0 0 auto;
+      height: clamp(360px, 60vh, 680px);
+      min-height: clamp(360px, 60vh, 680px);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .link {
+      stroke: rgba(16, 25, 21, 0.35);
+      stroke-width: 2px;
+      fill: none;
+    }
+
+    .node {
+      fill: #ffffff;
+      stroke: var(--accent-strong);
+      stroke-width: 2px;
+      cursor: grab;
+    }
+
+    .node:active {
+      cursor: grabbing;
+    }
+
+    .node-label {
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      font-size: 12px;
+      fill: var(--ink);
+      pointer-events: none;
+      dominant-baseline: middle;
+    }
+
+    .weight-label {
+      font-family: "SFMono-Regular", "Menlo", "Consolas", "Monaco", monospace;
+      fill: #b2541d;
+      pointer-events: none;
+      dominant-baseline: middle;
+    }
+
+    @media (max-width: 960px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="grid-overlay"></div>
+
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">kansu</p>
+        <h1>グラフビジュアライザ</h1>
+        <p class="sub">
+          テキスト入力からグラフを描画。辺リスト・隣接リスト・隣接行列・親配列に対応。
+        </p>
+      </div>
+      <div class="stats" id="stats">Nodes: 0 / Edges: 0</div>
+    </header>
+
+    <section class="panel input-panel">
+      <div class="panel-title">入力</div>
+      <textarea id="input" spellcheck="false" placeholder="例: 1 2\n2 3\n3 4"></textarea>
+
+      <div class="option-group">
+        <span class="option-label">形式</span>
+        <div class="format-buttons" id="formatButtons">
+          <button class="chip format-chip" type="button" data-format="edge">辺リスト</button>
+          <button class="chip format-chip" type="button" data-format="adjlist">隣接リスト</button>
+          <button class="chip format-chip" type="button" data-format="matrix">隣接行列</button>
+          <button class="chip format-chip" type="button" data-format="parent">親配列（木）</button>
+        </div>
+        <select id="format" class="visually-hidden">
+          <option value="edge">辺リスト</option>
+          <option value="adjlist">隣接リスト</option>
+          <option value="matrix">隣接行列</option>
+          <option value="parent">親配列（木）</option>
+        </select>
+      </div>
+
+      <div class="format-panel">
+        <div class="option-label">形式の詳細</div>
+        <div class="option-group" id="edgeOptions">
+          <label class="check">
+            <input type="checkbox" id="firstLineNM" checked />
+            <span>先頭行は N M</span>
+          </label>
+        </div>
+
+        <div class="option-group" id="adjOptions">
+          <label class="check">
+            <input type="checkbox" id="firstLineN" checked />
+            <span>先頭行は N</span>
+          </label>
+          <label class="option">
+            <span>次数 prefix</span>
+            <select id="degreePrefix">
+              <option value="auto">自動</option>
+              <option value="on">あり</option>
+              <option value="off">なし</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="option-group" id="matrixOptions">
+          <label class="check">
+            <input type="checkbox" id="matrixFirstLineN" checked />
+            <span>先頭行は N</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="allowLoops" />
+            <span>自己ループを許可</span>
+          </label>
+        </div>
+
+        <div class="option-group" id="parentOptions">
+          <label class="check">
+            <input type="checkbox" id="parentFirstLineN" checked />
+            <span>先頭行は N</span>
+          </label>
+          <label class="option">
+            <span>根ノード</span>
+            <input type="number" id="rootNode" value="1" min="0" />
+          </label>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label class="check">
+          <input type="checkbox" id="directed" />
+          <span>有向グラフ</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="weighted" />
+          <span>重み付き</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="oneIndexed" checked />
+          <span>1-indexed</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="showLabels" checked />
+          <span>ノード番号表示</span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="showWeights" />
+          <span>重み表示</span>
+        </label>
+      </div>
+
+      <div class="option-group">
+        <label class="option">
+          <span>ノードサイズ</span>
+          <input type="range" id="nodeSize" min="8" max="24" value="12" />
+        </label>
+        <div class="range-value" id="nodeSizeValue">12</div>
+      </div>
+
+      <div class="option-group">
+        <label class="option">
+          <span>重みサイズ</span>
+          <input type="range" id="weightSize" min="8" max="24" value="11" />
+        </label>
+        <div class="range-value" id="weightSizeValue">11</div>
+      </div>
+
+      <div class="examples">
+        <button class="chip" data-example="edge">辺リスト例</button>
+        <button class="chip" data-example="weighted">重み付き例</button>
+        <button class="chip" data-example="adjlist">隣接リスト例</button>
+        <button class="chip" data-example="matrix">隣接行列例</button>
+        <button class="chip" data-example="parent">親配列例</button>
+      </div>
+
+      <div class="error" id="error"></div>
+    </section>
+
+    <section class="panel viz-panel">
+      <div class="panel-title">結果</div>
+      <div id="viz"></div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const inputEl = document.getElementById("input");
+      const formatEl = document.getElementById("format");
+      const formatButtons = Array.from(document.querySelectorAll("[data-format]"));
+      const directedEl = document.getElementById("directed");
+      const weightedEl = document.getElementById("weighted");
+      const oneIndexedEl = document.getElementById("oneIndexed");
+      const showLabelsEl = document.getElementById("showLabels");
+      const showWeightsEl = document.getElementById("showWeights");
+      const nodeSizeEl = document.getElementById("nodeSize");
+      const nodeSizeValueEl = document.getElementById("nodeSizeValue");
+      const weightSizeEl = document.getElementById("weightSize");
+      const weightSizeValueEl = document.getElementById("weightSizeValue");
+      const firstLineNMEl = document.getElementById("firstLineNM");
+      const firstLineNEl = document.getElementById("firstLineN");
+      const degreePrefixEl = document.getElementById("degreePrefix");
+      const matrixFirstLineNEl = document.getElementById("matrixFirstLineN");
+      const allowLoopsEl = document.getElementById("allowLoops");
+      const parentFirstLineNEl = document.getElementById("parentFirstLineN");
+      const rootNodeEl = document.getElementById("rootNode");
+      const errorEl = document.getElementById("error");
+      const statsEl = document.getElementById("stats");
+      const edgeOptionsEl = document.getElementById("edgeOptions");
+      const adjOptionsEl = document.getElementById("adjOptions");
+      const matrixOptionsEl = document.getElementById("matrixOptions");
+      const parentOptionsEl = document.getElementById("parentOptions");
+
+      const examples = {
+        edge: `5 5\n1 2\n1 3\n2 4\n3 4\n4 5`,
+        weighted: `4 5\n1 2 3\n1 3 2\n2 4 5\n3 4 4\n1 4 7`,
+        adjlist: `5\n2 2 3\n2 1 4\n2 1 4\n3 2 3 5\n1 4`,
+        matrix: `4\n0 1 0 2\n1 0 3 0\n0 3 0 4\n2 0 4 0`,
+        parent: `6\n1 1 2 2 3`
+      };
+
+      const vizEl = document.getElementById("viz");
+      const svgNS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "100%");
+      svg.setAttribute("viewBox", "0 0 600 400");
+      vizEl.appendChild(svg);
+
+      const defs = document.createElementNS(svgNS, "defs");
+      const marker = document.createElementNS(svgNS, "marker");
+      marker.setAttribute("id", "arrow");
+      marker.setAttribute("viewBox", "0 -5 10 10");
+      marker.setAttribute("refX", "12");
+      marker.setAttribute("refY", "0");
+      marker.setAttribute("markerWidth", "6");
+      marker.setAttribute("markerHeight", "6");
+      marker.setAttribute("orient", "auto");
+      const markerPath = document.createElementNS(svgNS, "path");
+      markerPath.setAttribute("d", "M0,-5L10,0L0,5");
+      markerPath.setAttribute("fill", "#0b6d64");
+      marker.appendChild(markerPath);
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+
+      const g = document.createElementNS(svgNS, "g");
+      svg.appendChild(g);
+
+      function createGroup(className) {
+        const group = document.createElementNS(svgNS, "g");
+        group.setAttribute("class", className);
+        g.appendChild(group);
+        return group;
+      }
+
+      const linkGroup = createGroup("links");
+      const weightGroup = createGroup("weights");
+      const nodeGroup = createGroup("nodes");
+      const labelGroup = createGroup("labels");
+
+      const view = { x: 0, y: 0, k: 1 };
+
+      function setTransform() {
+        g.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.k})`);
+      }
+
+      setTransform();
+
+      let latestData = null;
+      let latestOptions = null;
+      let nodeEls = [];
+      let linkEls = [];
+      let labelEls = [];
+      let weightEls = [];
+      let lastGoodData = null;
+      let lastGoodOptions = null;
+      let lastDrawOptions = { showLabels: true, showWeights: false, directed: false, nodeSize: 12, weightLabelSize: 11 };
+      let isRendering = false;
+      let isRecovering = false;
+      let lastParseKey = null;
+      let lastLayoutInput = null;
+      let lastAutoSpacing = null;
+      let draggingNode = null;
+      let dragOffset = { x: 0, y: 0 };
+      let dragPointerId = null;
+      let lastSize = { w: 0, h: 0 };
+
+      function debounce(fn, wait) {
+        let timeout;
+        return (...args) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => fn(...args), wait);
+        };
+      }
+
+      function updateOptionVisibility() {
+        const format = formatEl.value;
+        edgeOptionsEl.style.display = format === "edge" ? "flex" : "none";
+        adjOptionsEl.style.display = format === "adjlist" ? "flex" : "none";
+        matrixOptionsEl.style.display = format === "matrix" ? "flex" : "none";
+        parentOptionsEl.style.display = format === "parent" ? "flex" : "none";
+        syncFormatButtons();
+      }
+
+      function syncFormatButtons() {
+        formatButtons.forEach((button) => {
+          const isActive = button.dataset.format === formatEl.value;
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+      }
+
+      function setError(message) {
+        errorEl.textContent = message || "";
+      }
+
+      function setStats(nodes, links) {
+        statsEl.textContent = `Nodes: ${nodes} / Edges: ${links}`;
+      }
+
+      function tokenize(line) {
+        return line.trim().split(/[\s,]+/).filter(Boolean);
+      }
+
+      function parseMaybeNumber(value) {
+        if (/^-?\d+(\.\d+)?$/.test(value)) {
+          return Number(value);
+        }
+        return null;
+      }
+
+      function normalizeLines(text) {
+        return text
+          .split(/\r?\n/)
+          .map((line) => line.replace(/\s*(#|\/\/).*$/, "").trim())
+          .filter(Boolean);
+      }
+
+      function createNodeMap() {
+        const map = new Map();
+        const ensure = (id) => {
+          const key = String(id);
+          if (!map.has(key)) {
+            map.set(key, { id: key });
+          }
+          return key;
+        };
+        return { map, ensure };
+      }
+
+      function undirectedKey(a, b) {
+        const aNum = parseMaybeNumber(String(a));
+        const bNum = parseMaybeNumber(String(b));
+        if (aNum !== null && bNum !== null) {
+          return aNum < bNum ? `${aNum}|${bNum}` : `${bNum}|${aNum}`;
+        }
+        const as = String(a);
+        const bs = String(b);
+        return as < bs ? `${as}|${bs}` : `${bs}|${as}`;
+      }
+
+      function compareNodeIds(a, b) {
+        const aNum = parseMaybeNumber(String(a));
+        const bNum = parseMaybeNumber(String(b));
+        if (aNum !== null && bNum !== null) {
+          if (aNum === bNum) return 0;
+          return aNum < bNum ? -1 : 1;
+        }
+        const as = String(a);
+        const bs = String(b);
+        if (as === bs) return 0;
+        return as < bs ? -1 : 1;
+      }
+
+      function addEdge(links, source, target, weight) {
+        links.push({ source: String(source), target: String(target), weight });
+      }
+
+      function parseEdgeList(lines, opts) {
+        let idx = 0;
+        let n = null;
+        if (opts.firstLineNM && lines.length) {
+          const tokens = tokenize(lines[0]);
+          const nCandidate = parseMaybeNumber(tokens[0]);
+          const mCandidate = parseMaybeNumber(tokens[1]);
+          if (nCandidate !== null && mCandidate !== null) {
+            n = nCandidate;
+            idx = 1;
+          }
+        }
+
+        const { map, ensure } = createNodeMap();
+        const links = [];
+        for (let i = idx; i < lines.length; i++) {
+          const tokens = tokenize(lines[i]);
+          if (tokens.length < 2) {
+            continue;
+          }
+          const u = ensure(tokens[0]);
+          const v = ensure(tokens[1]);
+          const weight = opts.weighted && tokens.length >= 3 ? Number(tokens[2]) : 1;
+          addEdge(links, u, v, weight);
+        }
+
+        if (n !== null && n > 0) {
+          const start = opts.oneIndexed ? 1 : 0;
+          for (let i = 0; i < n; i++) {
+            ensure(start + i);
+          }
+        }
+
+        return { nodes: Array.from(map.values()), links };
+      }
+
+      function parseAdjList(lines, opts) {
+        let idx = 0;
+        let n = null;
+        if (opts.firstLineN && lines.length) {
+          const tokens = tokenize(lines[0]);
+          const candidate = parseMaybeNumber(tokens[0]);
+          if (candidate === null) {
+            throw new Error("先頭行に N を指定してください。");
+          }
+          n = candidate;
+          idx = 1;
+        } else {
+          n = lines.length;
+        }
+
+        if (!n || n <= 0) {
+          throw new Error("N が 1 以上になるように入力してください。");
+        }
+
+        const { map, ensure } = createNodeMap();
+        const links = [];
+        const start = opts.oneIndexed ? 1 : 0;
+
+        for (let i = 0; i < n; i++) {
+          ensure(start + i);
+        }
+
+        for (let i = 0; i < n; i++) {
+          const line = lines[idx + i] || "";
+          const tokens = tokenize(line);
+          if (!tokens.length) {
+            continue;
+          }
+          let pos = 0;
+          const head = parseMaybeNumber(tokens[0]);
+          let hasDegreePrefix = false;
+
+          if (opts.degreePrefix === "on") {
+            hasDegreePrefix = true;
+          } else if (opts.degreePrefix === "auto" && head !== null) {
+            if (opts.weighted) {
+              if ((tokens.length - 1) % 2 === 0 && head === (tokens.length - 1) / 2) {
+                hasDegreePrefix = true;
+              }
+            } else if (head === tokens.length - 1) {
+              hasDegreePrefix = true;
+            }
+          }
+
+          if (hasDegreePrefix) {
+            pos = 1;
+          }
+
+          if (opts.weighted) {
+            for (; pos < tokens.length; pos += 2) {
+              if (pos + 1 >= tokens.length) {
+                break;
+              }
+              const neighbor = tokens[pos];
+              const weight = Number(tokens[pos + 1]);
+              addEdge(links, start + i, neighbor, weight);
+            }
+          } else {
+            for (; pos < tokens.length; pos++) {
+              const neighbor = tokens[pos];
+              addEdge(links, start + i, neighbor, 1);
+            }
+          }
+        }
+
+        return { nodes: Array.from(map.values()), links };
+      }
+
+      function parseMatrix(lines, opts) {
+        let idx = 0;
+        let n = null;
+        if (opts.matrixFirstLineN && lines.length) {
+          const candidate = parseMaybeNumber(tokenize(lines[0])[0]);
+          if (candidate === null) {
+            throw new Error("先頭行に N を指定してください。");
+          }
+          n = candidate;
+          idx = 1;
+        } else {
+          n = lines.length;
+        }
+
+        if (!n || n <= 0) {
+          throw new Error("N が 1 以上になるように入力してください。");
+        }
+
+        const { map, ensure } = createNodeMap();
+        const links = [];
+        const start = opts.oneIndexed ? 1 : 0;
+
+        for (let i = 0; i < n; i++) {
+          ensure(start + i);
+        }
+
+        const rows = lines.slice(idx);
+        if (rows.length < n) {
+          throw new Error("行数が N より少ないです。");
+        }
+
+        for (let i = 0; i < n; i++) {
+          const tokens = tokenize(rows[i]);
+          if (tokens.length < n) {
+            throw new Error(`行 ${i + 1} の列数が不足しています。`);
+          }
+          for (let j = 0; j < n; j++) {
+            if (!opts.allowLoops && i === j) {
+              continue;
+            }
+            const value = Number(tokens[j]);
+            if (!value) {
+              continue;
+            }
+            if (!opts.directed && j < i) {
+              continue;
+            }
+            addEdge(links, start + i, start + j, value);
+          }
+        }
+
+        return { nodes: Array.from(map.values()), links };
+      }
+
+      function parseParentList(lines, opts) {
+        let idx = 0;
+        let n = null;
+        if (opts.parentFirstLineN && lines.length) {
+          const candidate = parseMaybeNumber(tokenize(lines[0])[0]);
+          if (candidate === null) {
+            throw new Error("先頭行に N を指定してください。");
+          }
+          n = candidate;
+          idx = 1;
+        } else {
+          n = lines.length + 1;
+        }
+
+        if (!n || n <= 1) {
+          throw new Error("N が 2 以上になるように入力してください。");
+        }
+
+        const { map, ensure } = createNodeMap();
+        const links = [];
+        const start = opts.oneIndexed ? 1 : 0;
+        const root = parseMaybeNumber(rootNodeEl.value) ?? (opts.oneIndexed ? 1 : 0);
+
+        for (let i = 0; i < n; i++) {
+          ensure(start + i);
+        }
+
+        const tokens = lines.slice(idx).flatMap(tokenize);
+        if (tokens.length === n - 1) {
+          for (let i = 1; i < n; i++) {
+            const child = start + i;
+            const parent = tokens[i - 1];
+            addEdge(links, parent, child, 1);
+          }
+        } else if (tokens.length >= n) {
+          for (let i = 0; i < n; i++) {
+            const child = start + i;
+            const parent = tokens[i];
+            const parentNum = parseMaybeNumber(parent);
+            const isRootMarker = parentNum === -1 || (opts.oneIndexed && parentNum === 0);
+            if (child === root || isRootMarker) {
+              continue;
+            }
+            addEdge(links, parent, child, 1);
+          }
+        } else {
+          throw new Error("親配列の長さが N-1 か N になるように入力してください。");
+        }
+
+        return { nodes: Array.from(map.values()), links };
+      }
+
+      function parseInput(text, opts) {
+        const lines = normalizeLines(text);
+        if (!lines.length) {
+          return { nodes: [], links: [] };
+        }
+
+        switch (opts.format) {
+          case "edge":
+            return parseEdgeList(lines, opts);
+          case "adjlist":
+            return parseAdjList(lines, opts);
+          case "matrix":
+            return parseMatrix(lines, opts);
+          case "parent":
+            return parseParentList(lines, opts);
+          default:
+            return parseEdgeList(lines, opts);
+        }
+      }
+
+      function resolveLinkNodes(nodes, links) {
+        const map = new Map(nodes.map((node) => [node.id, node]));
+        links.forEach((link) => {
+          if (typeof link.source === "string" || typeof link.source === "number") {
+            link.source = map.get(String(link.source)) || link.source;
+          }
+          if (typeof link.target === "string" || typeof link.target === "number") {
+            link.target = map.get(String(link.target)) || link.target;
+          }
+        });
+      }
+
+      function applyLayout(nodes, links, opts, width, height) {
+        if (!nodes.length) {
+          return;
+        }
+
+        if (opts.layout === "grid") {
+          const cols = Math.ceil(Math.sqrt(nodes.length));
+          const spacing = opts.spacing;
+          const totalWidth = (cols - 1) * spacing;
+          const totalHeight = (Math.ceil(nodes.length / cols) - 1) * spacing;
+          const startX = (width - totalWidth) / 2;
+          const startY = (height - totalHeight) / 2;
+          nodes.forEach((node, i) => {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+            node.x = startX + col * spacing;
+            node.y = startY + row * spacing;
+          });
+          return;
+        }
+        const maxRadius = Math.min(width, height) / 2 - 40;
+        const targetRadius = (Math.max(20, opts.spacing) * nodes.length) / (2 * Math.PI);
+        const radius = Math.max(30, Math.min(maxRadius, targetRadius));
+        const attempts = 10;
+        const ids = nodes.map((node) => String(node.id));
+        let bestOrder = ids.slice();
+        let bestCrossings = Infinity;
+        for (let i = 0; i < attempts; i++) {
+          const candidate = i === 0 ? ids.slice() : shuffleArray(ids.slice());
+          const positions = computeCirclePositions(candidate, radius, width / 2, height / 2);
+          const crossings = countEdgeCrossings(links, positions);
+          if (crossings < bestCrossings) {
+            bestCrossings = crossings;
+            bestOrder = candidate;
+            if (bestCrossings === 0) {
+              break;
+            }
+          }
+        }
+        const bestPositions = computeCirclePositions(bestOrder, radius, width / 2, height / 2);
+        nodes.forEach((node) => {
+          const pos = bestPositions.get(String(node.id));
+          if (pos) {
+            node.x = pos.x;
+            node.y = pos.y;
+          }
+        });
+      }
+
+      function shuffleArray(values) {
+        for (let i = values.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [values[i], values[j]] = [values[j], values[i]];
+        }
+        return values;
+      }
+
+      function computeCirclePositions(order, radius, cx, cy) {
+        const map = new Map();
+        const n = order.length;
+        order.forEach((id, i) => {
+          const angle = (2 * Math.PI * i) / n;
+          map.set(String(id), {
+            x: cx + radius * Math.cos(angle),
+            y: cy + radius * Math.sin(angle)
+          });
+        });
+        return map;
+      }
+
+      function countEdgeCrossings(links, posMap) {
+        let crossings = 0;
+        for (let i = 0; i < links.length; i++) {
+          const a = links[i].source;
+          const b = links[i].target;
+          if (!a || !b) {
+            continue;
+          }
+          const aId = String(a.id ?? a);
+          const bId = String(b.id ?? b);
+          const p1 = posMap.get(aId);
+          const p2 = posMap.get(bId);
+          if (!p1 || !p2) {
+            continue;
+          }
+          for (let j = i + 1; j < links.length; j++) {
+            const c = links[j].source;
+            const d = links[j].target;
+            if (!c || !d) {
+              continue;
+            }
+            const cId = String(c.id ?? c);
+            const dId = String(d.id ?? d);
+            if (aId === cId || aId === dId || bId === cId || bId === dId) {
+              continue;
+            }
+            const p3 = posMap.get(cId);
+            const p4 = posMap.get(dId);
+            if (!p3 || !p4) {
+              continue;
+            }
+            if (segmentsIntersect(p1, p2, p3, p4)) {
+              crossings += 1;
+            }
+          }
+        }
+        return crossings;
+      }
+
+      function segmentsIntersect(p1, p2, p3, p4) {
+        const o1 = orientation(p1, p2, p3);
+        const o2 = orientation(p1, p2, p4);
+        const o3 = orientation(p3, p4, p1);
+        const o4 = orientation(p3, p4, p2);
+
+        if (o1 === 0 && onSegment(p1, p2, p3)) return true;
+        if (o2 === 0 && onSegment(p1, p2, p4)) return true;
+        if (o3 === 0 && onSegment(p3, p4, p1)) return true;
+        if (o4 === 0 && onSegment(p3, p4, p2)) return true;
+
+        return o1 !== o2 && o3 !== o4;
+      }
+
+      function orientation(p, q, r) {
+        const value = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+        if (Math.abs(value) < 1e-9) return 0;
+        return value > 0 ? 1 : 2;
+      }
+
+      function onSegment(p, q, r) {
+        return (
+          r.x <= Math.max(p.x, q.x) + 1e-9 &&
+          r.x + 1e-9 >= Math.min(p.x, q.x) &&
+          r.y <= Math.max(p.y, q.y) + 1e-9 &&
+          r.y + 1e-9 >= Math.min(p.y, q.y)
+        );
+      }
+
+      function updatePositions(nodeRadius) {
+        const opts = latestOptions || {};
+        const nodeLabelSize = Math.max(8, Math.min(26, nodeRadius * 0.95));
+        const weightLabelSize = Math.max(8, Math.min(28, Number(opts.weightLabelSize) || 11));
+        const weightStep = Math.max(8, weightLabelSize * 0.9);
+        const minLabelDistance = Math.max(12, weightLabelSize * 1.4);
+        const arrowPad = opts.directed ? 6 : 0;
+        const linkOffsets = computeLinkOffsets(latestData.links);
+        const linkOffsetStep = Math.max(8, nodeRadius * 0.55);
+        const placedWeights = [];
+
+        linkEls.forEach((line, i) => {
+          const link = latestData.links[i];
+          if (!link || !link.source || !link.target) {
+            return;
+          }
+          const sx = link.source.x;
+          const sy = link.source.y;
+          const tx = link.target.x;
+          const ty = link.target.y;
+          const sourceId = link.source.id ?? link.source;
+          const targetId = link.target.id ?? link.target;
+          const isLoop = String(sourceId) === String(targetId);
+          if (isLoop) {
+            const loopIndex = linkOffsets[i] || 0;
+            const loopRadius = nodeRadius * 4.6 + Math.abs(loopIndex) * nodeRadius * 2.2;
+            const angleBase = -Math.PI / 2;
+            const angleStep = Math.PI / 10;
+            const angle = angleBase + loopIndex * angleStep;
+            const delta = Math.PI / 3;
+            const startAngle = angle - delta;
+            const endAngle = angle + delta;
+            const startRadius = nodeRadius;
+            const endRadius = nodeRadius + arrowPad * 0.8;
+            const sxLoop = sx + Math.cos(startAngle) * startRadius;
+            const syLoop = sy + Math.sin(startAngle) * startRadius;
+            const exLoop = sx + Math.cos(endAngle) * endRadius;
+            const eyLoop = sy + Math.sin(endAngle) * endRadius;
+            const c1x = sx + Math.cos(startAngle) * loopRadius;
+            const c1y = sy + Math.sin(startAngle) * loopRadius;
+            const c2x = sx + Math.cos(endAngle) * loopRadius;
+            const c2y = sy + Math.sin(endAngle) * loopRadius;
+            const d = `M ${sxLoop} ${syLoop} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${exLoop} ${eyLoop}`;
+            line.setAttribute("d", d);
+            return;
+          }
+          let dx = tx - sx;
+          let dy = ty - sy;
+          const dist = Math.hypot(dx, dy) || 1;
+          let nx = -dy / dist;
+          let ny = dx / dist;
+          if (!Number.isFinite(nx) || !Number.isFinite(ny)) {
+            nx = 0;
+            ny = -1;
+          }
+          const directionSign = compareNodeIds(sourceId, targetId) <= 0 ? 1 : -1;
+          const offset = (linkOffsets[i] || 0) * linkOffsetStep * directionSign;
+          const ux = dx / dist;
+          const uy = dy / dist;
+          const startTrim = nodeRadius * 0.9;
+          const endTrim = nodeRadius * 0.9 + arrowPad;
+          const x1 = sx + ux * startTrim + nx * offset;
+          const y1 = sy + uy * startTrim + ny * offset;
+          const x2 = tx - ux * endTrim + nx * offset;
+          const y2 = ty - uy * endTrim + ny * offset;
+          line.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
+        });
+
+        nodeEls.forEach((circle, i) => {
+          const node = latestData.nodes[i];
+          circle.setAttribute("cx", node.x);
+          circle.setAttribute("cy", node.y);
+          circle.setAttribute("r", nodeRadius);
+        });
+
+        labelEls.forEach((textEl, i) => {
+          const node = latestData.nodes[i];
+          textEl.setAttribute("x", node.x);
+          textEl.setAttribute("y", node.y);
+          textEl.setAttribute("text-anchor", "middle");
+          textEl.style.fontSize = `${nodeLabelSize}px`;
+        });
+
+        weightEls.forEach((textEl, i) => {
+          const link = latestData.links[i];
+          if (!link || !link.source || !link.target) {
+            return;
+          }
+          const sx = link.source.x;
+          const sy = link.source.y;
+          const tx = link.target.x;
+          const ty = link.target.y;
+          const sourceId = link.source.id ?? link.source;
+          const targetId = link.target.id ?? link.target;
+          const isLoop = String(sourceId) === String(targetId);
+          let mx = 0;
+          let my = 0;
+          let nx = 0;
+          let ny = -1;
+          const baseOffset = 0;
+          if (isLoop) {
+            const loopIndex = linkOffsets[i] || 0;
+            const loopRadius = nodeRadius * 4.6 + Math.abs(loopIndex) * nodeRadius * 2.2;
+            const angleBase = -Math.PI / 2;
+            const angleStep = Math.PI / 10;
+            const angle = angleBase + loopIndex * angleStep;
+            nx = Math.cos(angle);
+            ny = Math.sin(angle);
+            const labelRadius = loopRadius + weightStep * 0.6;
+            mx = sx + nx * labelRadius;
+            my = sy + ny * labelRadius;
+          } else {
+            let dx = tx - sx;
+            let dy = ty - sy;
+            const dist = Math.hypot(dx, dy) || 1;
+            nx = -dy / dist;
+            ny = dx / dist;
+            if (!Number.isFinite(nx) || !Number.isFinite(ny)) {
+              nx = 0;
+              ny = -1;
+            }
+            const directionSign = compareNodeIds(sourceId, targetId) <= 0 ? 1 : -1;
+            const lineOffset = (linkOffsets[i] || 0) * linkOffsetStep * directionSign;
+            const ux = dx / dist;
+            const uy = dy / dist;
+            const startTrim = nodeRadius * 0.9;
+            const endTrim = nodeRadius * 0.9 + arrowPad;
+            const sxTrim = sx + ux * startTrim;
+            const syTrim = sy + uy * startTrim;
+            const txTrim = tx - ux * endTrim;
+            const tyTrim = ty - uy * endTrim;
+            mx = (sxTrim + txTrim) / 2 + nx * lineOffset;
+            my = (syTrim + tyTrim) / 2 + ny * lineOffset;
+          }
+          let chosenX = mx + nx * baseOffset;
+          let chosenY = my + ny * baseOffset;
+          const maxAttempts = 6;
+          for (let attempt = 0; attempt <= maxAttempts; attempt++) {
+            let offsetShift = 0;
+            if (attempt > 0) {
+              const sign = attempt % 2 === 1 ? 1 : -1;
+              const magnitude = Math.ceil(attempt / 2);
+              offsetShift = sign * magnitude * weightStep;
+            }
+            const candidateX = mx + nx * (baseOffset + offsetShift);
+            const candidateY = my + ny * (baseOffset + offsetShift);
+            let ok = true;
+            for (const placed of placedWeights) {
+              const ddx = candidateX - placed.x;
+              const ddy = candidateY - placed.y;
+              if (ddx * ddx + ddy * ddy < minLabelDistance * minLabelDistance) {
+                ok = false;
+                break;
+              }
+            }
+            if (ok) {
+              chosenX = candidateX;
+              chosenY = candidateY;
+              break;
+            }
+          }
+          placedWeights.push({ x: chosenX, y: chosenY });
+          textEl.setAttribute("x", chosenX);
+          textEl.setAttribute("y", chosenY);
+          textEl.setAttribute("text-anchor", "middle");
+          textEl.style.fontSize = `${weightLabelSize}px`;
+        });
+      }
+
+      function computeLinkOffsets(links) {
+        const offsets = new Array(links.length).fill(0);
+        const groups = new Map();
+        links.forEach((link, i) => {
+          if (!link || !link.source || !link.target) {
+            return;
+          }
+          const a = link.source.id ?? link.source;
+          const b = link.target.id ?? link.target;
+          const key = undirectedKey(a, b);
+          let entry = groups.get(key);
+          if (!entry) {
+            entry = { forward: [], backward: [], loops: [] };
+            groups.set(key, entry);
+          }
+          const cmp = compareNodeIds(a, b);
+          if (cmp === 0) {
+            entry.loops.push(i);
+          } else if (cmp < 0) {
+            entry.forward.push(i);
+          } else {
+            entry.backward.push(i);
+          }
+        });
+        const assignCentered = (list) => {
+          const count = list.length;
+          list.forEach((idx, k) => {
+            offsets[idx] = k - (count - 1) / 2;
+          });
+        };
+        const assignSide = (list) => {
+          list.forEach((idx, k) => {
+            offsets[idx] = k + 0.5;
+          });
+        };
+        groups.forEach((entry) => {
+          if (entry.loops.length) {
+            assignCentered(entry.loops);
+          }
+          const hasForward = entry.forward.length > 0;
+          const hasBackward = entry.backward.length > 0;
+          if (hasForward && hasBackward) {
+            assignSide(entry.forward);
+            assignSide(entry.backward);
+            return;
+          }
+          if (hasForward) {
+            assignCentered(entry.forward);
+          }
+          if (hasBackward) {
+            assignCentered(entry.backward);
+          }
+        });
+        return offsets;
+      }
+
+      function handleNodePointerDown(event, node) {
+        event.stopPropagation();
+        if (event.button !== 0) {
+          return;
+        }
+        draggingNode = node;
+        dragPointerId = event.pointerId;
+        const world = screenToWorld(event.clientX, event.clientY);
+        dragOffset = { x: node.x - world.x, y: node.y - world.y };
+        svg.setPointerCapture(event.pointerId);
+      }
+
+      function screenToWorld(clientX, clientY) {
+        const rect = svg.getBoundingClientRect();
+        const sx = clientX - rect.left;
+        const sy = clientY - rect.top;
+        return {
+          x: (sx - view.x) / view.k,
+          y: (sy - view.y) / view.k
+        };
+      }
+
+      function renderGraphInternal(data, opts, recalcLayout = true) {
+        latestData = data;
+        latestOptions = opts;
+
+        const rect = vizEl.getBoundingClientRect();
+        const width = Math.round(rect.width || vizEl.clientWidth || 0);
+        const height = Math.round(rect.height || vizEl.clientHeight || 0);
+        if (width < 10 || height < 10) {
+          requestAnimationFrame(() => {
+            if (latestData && latestOptions) {
+              renderGraph(latestData, latestOptions, recalcLayout);
+            }
+          });
+          return;
+        }
+        const sizeChanged = Math.abs(width - lastSize.w) > 2 || Math.abs(height - lastSize.h) > 2;
+        const needsResolve = data.links.some(
+          (link) =>
+            typeof link.source === "string" ||
+            typeof link.source === "number" ||
+            typeof link.target === "string" ||
+            typeof link.target === "number"
+        );
+        const needsLayout = recalcLayout || data.nodes.some((node) => !Number.isFinite(node.x) || !Number.isFinite(node.y));
+        const needsRedraw =
+          opts.showLabels !== lastDrawOptions.showLabels ||
+          opts.showWeights !== lastDrawOptions.showWeights ||
+          opts.directed !== lastDrawOptions.directed ||
+          opts.nodeSize !== lastDrawOptions.nodeSize ||
+          opts.weightLabelSize !== lastDrawOptions.weightLabelSize;
+        if (!recalcLayout && !sizeChanged && !needsResolve && !needsLayout && !needsRedraw) {
+          return;
+        }
+        const shouldRecalc = needsLayout || (sizeChanged && (lastSize.w < 10 || lastSize.h < 10));
+        lastSize = { w: width, h: height };
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+        if (shouldRecalc || sizeChanged || needsResolve) {
+          resolveLinkNodes(data.nodes, data.links);
+        }
+        if (shouldRecalc) {
+          applyLayout(data.nodes, data.links, opts, width, height);
+          normalizeNodes(data.nodes, width, height);
+          resetView();
+        }
+
+        const nodeCount = Math.max(1, data.nodes.length);
+        const autoRadius = Math.max(8, Math.min(18, 220 / Math.sqrt(nodeCount)));
+        const sizeScale = Math.max(0.5, Math.min(2.5, (Number(opts.nodeSize) || 12) / 12));
+        const nodeRadius = Math.max(4, autoRadius * sizeScale);
+
+        linkGroup.innerHTML = "";
+        weightGroup.innerHTML = "";
+        nodeGroup.innerHTML = "";
+        labelGroup.innerHTML = "";
+
+        linkEls = data.links.map((link) => {
+          const path = document.createElementNS(svgNS, "path");
+          path.setAttribute("class", "link");
+          if (opts.directed) {
+            path.setAttribute("marker-end", "url(#arrow)");
+          }
+          linkGroup.appendChild(path);
+          return path;
+        });
+
+        weightEls = [];
+        if (opts.showWeights) {
+          weightEls = data.links.map((link) => {
+            const textEl = document.createElementNS(svgNS, "text");
+            textEl.setAttribute("class", "weight-label");
+            textEl.textContent = link.weight;
+            weightGroup.appendChild(textEl);
+            return textEl;
+          });
+        }
+
+        nodeEls = data.nodes.map((node) => {
+          const circle = document.createElementNS(svgNS, "circle");
+          circle.setAttribute("class", "node");
+          circle.addEventListener("pointerdown", (event) => handleNodePointerDown(event, node));
+          nodeGroup.appendChild(circle);
+          return circle;
+        });
+
+        labelEls = [];
+        if (opts.showLabels) {
+          labelEls = data.nodes.map((node) => {
+            const textEl = document.createElementNS(svgNS, "text");
+            textEl.setAttribute("class", "node-label");
+            textEl.textContent = node.id;
+            labelGroup.appendChild(textEl);
+            return textEl;
+          });
+        }
+
+        updatePositions(nodeRadius);
+        if (data.nodes.length && !hasVisibleNode(data.nodes, width, height)) {
+          resetView();
+          if (!hasVisibleNode(data.nodes, width, height)) {
+            applyCircleFallback(data.nodes, width, height);
+            normalizeNodes(data.nodes, width, height);
+          }
+          updatePositions(nodeRadius);
+        }
+        setStats(data.nodes.length, data.links.length);
+        lastDrawOptions = {
+          showLabels: opts.showLabels,
+          showWeights: opts.showWeights,
+          directed: opts.directed,
+          nodeSize: opts.nodeSize,
+          weightLabelSize: opts.weightLabelSize
+        };
+      }
+
+      function hasVisibleNode(nodes, width, height) {
+        const margin = 20;
+        if (!Number.isFinite(view.k) || view.k === 0) {
+          return false;
+        }
+        return nodes.some((node) => {
+          if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) {
+            return false;
+          }
+          const sx = node.x * view.k + view.x;
+          const sy = node.y * view.k + view.y;
+          return sx >= -margin && sx <= width + margin && sy >= -margin && sy <= height + margin;
+        });
+      }
+
+      function renderGraph(data, opts, recalcLayout = true) {
+        if (isRendering) {
+          return;
+        }
+        isRendering = true;
+        try {
+          renderGraphInternal(data, opts, recalcLayout);
+          if (data.nodes.length && data.nodes.every((node) => Number.isFinite(node.x) && Number.isFinite(node.y))) {
+            lastGoodData = data;
+            lastGoodOptions = opts;
+          }
+        } catch (err) {
+          setError(err && err.message ? err.message : "描画中にエラーが発生しました。");
+          if (!isRecovering && lastGoodData && lastGoodOptions && lastGoodData !== data) {
+            isRecovering = true;
+            try {
+              renderGraphInternal(lastGoodData, lastGoodOptions, false);
+            } finally {
+              isRecovering = false;
+            }
+          }
+        } finally {
+          isRendering = false;
+        }
+      }
+
+      function getBounds(nodes) {
+        if (!nodes.length) {
+          return null;
+        }
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for (const node of nodes) {
+          if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) {
+            return { valid: false };
+          }
+          minX = Math.min(minX, node.x);
+          minY = Math.min(minY, node.y);
+          maxX = Math.max(maxX, node.x);
+          maxY = Math.max(maxY, node.y);
+        }
+        return { valid: true, minX, minY, maxX, maxY };
+      }
+
+      function applyCircleFallback(nodes, width, height) {
+        if (!nodes.length) {
+          return;
+        }
+        const radius = Math.min(width, height) / 2 - 40;
+        nodes.forEach((node, i) => {
+          const angle = (2 * Math.PI * i) / nodes.length;
+          node.x = width / 2 + radius * Math.cos(angle);
+          node.y = height / 2 + radius * Math.sin(angle);
+        });
+      }
+
+      function normalizeNodes(nodes, width, height) {
+        if (!nodes.length) {
+          return;
+        }
+        let bounds = getBounds(nodes);
+        if (!bounds || !bounds.valid) {
+          applyCircleFallback(nodes, width, height);
+          bounds = getBounds(nodes);
+          if (!bounds || !bounds.valid) {
+            return;
+          }
+        }
+        centerNodes(nodes, width, height);
+        bounds = getBounds(nodes);
+        if (bounds && bounds.valid) {
+          const margin = 24;
+          const spanX = Math.max(1, bounds.maxX - bounds.minX);
+          const spanY = Math.max(1, bounds.maxY - bounds.minY);
+          const availableX = Math.max(1, width - margin * 2);
+          const availableY = Math.max(1, height - margin * 2);
+          const scale = Math.min(1, availableX / spanX, availableY / spanY);
+          if (scale < 1) {
+            const cx = (bounds.minX + bounds.maxX) / 2;
+            const cy = (bounds.minY + bounds.maxY) / 2;
+            nodes.forEach((node) => {
+              node.x = cx + (node.x - cx) * scale;
+              node.y = cy + (node.y - cy) * scale;
+            });
+          }
+        }
+        clampNodes(nodes, width, height);
+      }
+
+
+      function centerNodes(nodes, width, height) {
+        const bounds = getBounds(nodes);
+        if (!bounds || !bounds.valid) {
+          return;
+        }
+        const centerX = (bounds.minX + bounds.maxX) / 2;
+        const centerY = (bounds.minY + bounds.maxY) / 2;
+        const dx = width / 2 - centerX;
+        const dy = height / 2 - centerY;
+        nodes.forEach((node) => {
+          node.x += dx;
+          node.y += dy;
+        });
+      }
+
+      function clampNodes(nodes, width, height) {
+        const margin = 24;
+        nodes.forEach((node) => {
+          if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) {
+            node.x = width / 2 + (Math.random() - 0.5) * margin * 4;
+            node.y = height / 2 + (Math.random() - 0.5) * margin * 4;
+          }
+          node.x = Math.min(width - margin, Math.max(margin, node.x));
+          node.y = Math.min(height - margin, Math.max(margin, node.y));
+        });
+      }
+
+      function resetView() {
+        view.x = 0;
+        view.y = 0;
+        view.k = 1;
+        setTransform();
+      }
+
+      function getOptions() {
+        return {
+          format: formatEl.value,
+          layout: "circle",
+          directed: directedEl.checked,
+          weighted: weightedEl.checked,
+          oneIndexed: oneIndexedEl.checked,
+          showLabels: showLabelsEl.checked,
+          showWeights: showWeightsEl.checked,
+          nodeSize: Number(nodeSizeEl.value),
+          weightLabelSize: Number(weightSizeEl.value),
+          firstLineNM: firstLineNMEl.checked,
+          firstLineN: firstLineNEl.checked,
+          degreePrefix: degreePrefixEl.value,
+          matrixFirstLineN: matrixFirstLineNEl.checked,
+          allowLoops: allowLoopsEl.checked,
+          parentFirstLineN: parentFirstLineNEl.checked,
+          spacing: null
+        };
+      }
+
+      function buildLayoutKey(text, opts) {
+        return [
+          text.trim(),
+          opts.format,
+          opts.layout,
+          opts.directed ? "1" : "0",
+          opts.weighted ? "1" : "0",
+          opts.oneIndexed ? "1" : "0",
+          opts.firstLineNM ? "1" : "0",
+          opts.firstLineN ? "1" : "0",
+          opts.degreePrefix,
+          opts.matrixFirstLineN ? "1" : "0",
+          opts.allowLoops ? "1" : "0",
+          opts.parentFirstLineN ? "1" : "0",
+          rootNodeEl.value
+        ].join("|");
+      }
+
+      function clampNumber(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function computeMaxSpacing(nodeCount, width, height) {
+        const margin = 24;
+        const availableX = Math.max(1, width - margin * 2);
+        const availableY = Math.max(1, height - margin * 2);
+        if (nodeCount <= 1) {
+          return Math.min(availableX, availableY);
+        }
+        const maxRadius = Math.min(availableX, availableY) / 2;
+        return (2 * Math.PI * maxRadius) / nodeCount;
+      }
+
+      function setAutoSpacing(data, opts) {
+        const rect = vizEl.getBoundingClientRect();
+        const width = Math.round(rect.width || vizEl.clientWidth || 0);
+        const height = Math.round(rect.height || vizEl.clientHeight || 0);
+        if (width < 10 || height < 10) {
+          return null;
+        }
+        const maxSpacing = computeMaxSpacing(data.nodes.length, width, height);
+        const nextValue = Math.max(40, Math.floor(maxSpacing));
+        opts.spacing = nextValue;
+        return nextValue;
+      }
+
+      function applyStablePositions(nextData, prevData) {
+        if (!prevData || !prevData.nodes || !prevData.nodes.length) {
+          return;
+        }
+        const prevMap = new Map();
+        prevData.nodes.forEach((node) => {
+          if (Number.isFinite(node.x) && Number.isFinite(node.y)) {
+            prevMap.set(String(node.id), { x: node.x, y: node.y });
+          }
+        });
+        if (!prevMap.size) {
+          return;
+        }
+        const missing = [];
+        nextData.nodes.forEach((node) => {
+          const prev = prevMap.get(String(node.id));
+          if (prev) {
+            node.x = prev.x;
+            node.y = prev.y;
+          } else {
+            missing.push(node);
+          }
+        });
+        if (!missing.length) {
+          return;
+        }
+        let centerX = 0;
+        let centerY = 0;
+        prevMap.forEach((pos) => {
+          centerX += pos.x;
+          centerY += pos.y;
+        });
+        centerX /= prevMap.size;
+        centerY /= prevMap.size;
+        let width = lastSize.w;
+        let height = lastSize.h;
+        if (width < 10 || height < 10) {
+          const rect = vizEl.getBoundingClientRect();
+          width = Math.round(rect.width || vizEl.clientWidth || 0);
+          height = Math.round(rect.height || vizEl.clientHeight || 0);
+        }
+        if (!Number.isFinite(centerX) || !Number.isFinite(centerY)) {
+          centerX = width > 0 ? width / 2 : 300;
+          centerY = height > 0 ? height / 2 : 200;
+        }
+        const baseRadius = Math.max(20, Math.min(width || 600, height || 400) * 0.14);
+        missing.forEach((node, idx) => {
+          const angle = (2 * Math.PI * idx) / missing.length;
+          node.x = centerX + baseRadius * Math.cos(angle);
+          node.y = centerY + baseRadius * Math.sin(angle);
+        });
+      }
+
+      function renderFromUI() {
+        setError("");
+        const opts = getOptions();
+        const inputKey = inputEl.value.trim();
+        const parseKey = buildLayoutKey(inputEl.value, opts);
+        const reuseData = parseKey === lastParseKey && latestData;
+        const shouldRecalc = inputKey !== lastLayoutInput;
+        let data;
+        try {
+          data = reuseData ? latestData : parseInput(inputEl.value, opts);
+          if (!data.nodes.length) {
+            setError("ノードがありません。入力形式と内容を確認してください。");
+            return;
+          }
+          if (!shouldRecalc && data !== latestData) {
+            applyStablePositions(data, latestData);
+          }
+          const autoSpacing = shouldRecalc ? setAutoSpacing(data, opts) : lastAutoSpacing;
+          renderGraph(data, opts, shouldRecalc);
+          lastAutoSpacing = autoSpacing ?? lastAutoSpacing;
+          if (!reuseData) {
+            lastParseKey = parseKey;
+          }
+        } catch (err) {
+          setError(err.message || "解析に失敗しました。");
+          if (!latestData) {
+            setStats(0, 0);
+          }
+          return;
+        } finally {
+          lastLayoutInput = inputKey;
+        }
+      }
+
+      const scheduleRender = debounce(() => {
+        renderFromUI();
+      }, 240);
+
+      [
+        inputEl,
+        formatEl,
+        directedEl,
+        weightedEl,
+        oneIndexedEl,
+        showLabelsEl,
+        showWeightsEl,
+        nodeSizeEl,
+        firstLineNMEl,
+        firstLineNEl,
+        degreePrefixEl,
+        matrixFirstLineNEl,
+        allowLoopsEl,
+        parentFirstLineNEl,
+        rootNodeEl,
+        weightSizeEl
+      ].forEach((el) => {
+        el.addEventListener("input", () => {
+          if (el === formatEl) {
+            updateOptionVisibility();
+          }
+          if (el === nodeSizeEl) {
+            nodeSizeValueEl.textContent = nodeSizeEl.value;
+          }
+          if (el === weightSizeEl) {
+            weightSizeValueEl.textContent = weightSizeEl.value;
+          }
+          scheduleRender();
+        });
+      });
+
+      Array.from(document.querySelectorAll(".chip[data-example]")).forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const name = chip.dataset.example;
+          inputEl.value = examples[name] || "";
+          if (name === "edge") {
+            formatEl.value = "edge";
+            weightedEl.checked = false;
+          }
+          if (name === "weighted") {
+            formatEl.value = "edge";
+            weightedEl.checked = true;
+          }
+          if (name === "adjlist") {
+            formatEl.value = "adjlist";
+            weightedEl.checked = false;
+          }
+          if (name === "matrix") {
+            formatEl.value = "matrix";
+            weightedEl.checked = true;
+            showWeightsEl.checked = true;
+          }
+          if (name === "parent") {
+            formatEl.value = "parent";
+            directedEl.checked = true;
+          }
+          updateOptionVisibility();
+          renderFromUI();
+        });
+      });
+
+      formatButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextFormat = button.dataset.format;
+          if (!nextFormat || formatEl.value === nextFormat) {
+            return;
+          }
+          formatEl.value = nextFormat;
+          updateOptionVisibility();
+          scheduleRender();
+        });
+      });
+
+      svg.addEventListener("pointermove", (event) => {
+        if (draggingNode && event.pointerId === dragPointerId) {
+          const world = screenToWorld(event.clientX, event.clientY);
+          draggingNode.x = world.x + dragOffset.x;
+          draggingNode.y = world.y + dragOffset.y;
+          const nodeRadius = Math.max(8, Math.min(18, 220 / Math.sqrt(Math.max(1, latestData.nodes.length))));
+          updatePositions(nodeRadius);
+          return;
+        }
+      });
+
+      function endPointer(event) {
+        if (dragPointerId === event.pointerId) {
+          draggingNode = null;
+          dragPointerId = null;
+        }
+        if (svg.hasPointerCapture(event.pointerId)) {
+          svg.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      svg.addEventListener("pointerup", endPointer);
+      svg.addEventListener("pointercancel", endPointer);
+      svg.addEventListener("lostpointercapture", endPointer);
+      window.addEventListener("blur", () => {
+        draggingNode = null;
+        dragPointerId = null;
+      });
+
+      updateOptionVisibility();
+      inputEl.value = examples.edge;
+      nodeSizeValueEl.textContent = nodeSizeEl.value;
+      weightSizeValueEl.textContent = weightSizeEl.value;
+      renderFromUI();
+
+      if (window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(() => {
+          if (latestData && latestOptions) {
+            renderGraph(latestData, latestOptions, false);
+          }
+        });
+        resizeObserver.observe(vizEl);
+      } else {
+        window.addEventListener("resize", () => {
+          if (latestData && latestOptions) {
+            renderGraph(latestData, latestOptions, false);
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
