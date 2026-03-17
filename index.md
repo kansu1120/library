@@ -8,7 +8,8 @@ description: 競技プログラミングのためのC++ライブラリ。アル�
 - [グラフビジュアライザ](グラフビジュアライザ.html) 
 - [ライブラリ](ライブラリindex.html)
 - [編集](add_file.md)
-- [AHC](all/AHC.md) 
+- [AHC](all/AHC.md)
+- [典型解説](典型解説.md)
 
 
 
