@@ -6,7 +6,7 @@ description: 競技プログラミングのためのC++ライブラリ。アル�
 
 - [一覧](一覧.md)
 - [グラフビジュアライザ](グラフビジュアライザ.html) 
-- [ライブラリ](ライブラリindex.html)
+- [ライブラリ](ライブラリindex.md)
 - [編集](add_file.md)
 - [AHC](all/AHC.md)
 - [典型解説](典型解説/index.md)
